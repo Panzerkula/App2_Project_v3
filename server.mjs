@@ -1,3 +1,4 @@
+import { requireAuth } from "./modules/authorization.mjs"
 import express from "express";
 
 const PORT = 8080;
@@ -14,3 +15,6 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Port: ${PORT}`)
 })
+
+app.post("/games", requireAuth, createGame);
+app.get("/games/:id", requireAuth, getGame);

@@ -1,0 +1,74 @@
+Login:
+POST /auth/login
+    IF credentials are valid {
+        CREATE session
+        STORE user info in session
+        RETURN success
+    }ELSE{
+        RETURN error
+    }
+
+
+Logout:
+POST /auth/logout
+    REMOVE session
+    RETURN success
+
+
+Current session:
+GET /auth/me
+    RETURN session user OR null
+
+
+Create game:
+POST /games
+    IF user is authenticated{
+
+        CREATE new game
+        owner = current user
+        players = submitted players
+
+        SAVE game
+        RETURN game id
+    }
+
+
+List games:
+GET /games
+    REQUIRE user is authenticated
+
+    FIND games WHERE user is a player
+    RETURN game summaries
+
+
+List game details:
+GET /games/:gameId
+    REQUIRE user is authenticated
+    REQUIRE user is player in game
+
+    RETURN full game data
+
+
+Round score:
+POST /games/:gameId/round
+    REQUIRE user is authenticated
+    REQUIRE user is player in game
+    REQUIRE game status is "active"
+
+    VALIDATE scores
+        EACH player has one score
+        scores are integers >= 0
+        no extra players
+
+    CALCULATE totals
+        ADD round scores to totals
+
+    APPEND new round to game
+        roundNumber = previous round + 1
+        scores = submitted scores
+
+    IF this is final round
+        SET game status = "completed"
+
+  SAVE game
+  RETURN updated game state
