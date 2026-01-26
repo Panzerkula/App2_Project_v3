@@ -1,4 +1,4 @@
-import { requireAuth } from "./modules/authorization.mjs"
+import { requireAuth } from "./modules/auth_middleware.mjs"
 import express from "express";
 
 const PORT = 8080;
