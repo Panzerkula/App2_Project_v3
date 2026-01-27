@@ -4,7 +4,3 @@ export function requireAuth(req, res, next) {
   }
   next();
 }
-
-export function createGame(){
-    const id = 1;
-};
