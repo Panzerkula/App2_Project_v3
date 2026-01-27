@@ -1,9 +1,18 @@
 import express from "express";
 import authRoutes from "./routes/auth_routes.mjs";
 import { requireAuth } from "./modules/auth_middleware.mjs";
+import session from "express-session";
 
 const app = express();
 const PORT = 3000;
+
+app.use(
+  session({
+    secret: "dev-secret",
+    resave: false,
+    saveUninitialized: false
+  })
+);
 
 app.use(express.json());
 

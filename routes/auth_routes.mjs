@@ -3,12 +3,12 @@ import express from "express";
 const router = express.Router();
 
 router.post("/login", (req, res) => {
-  req.user = { id: 1, username: "demo" };
+  req.session.user = { id: 1, username: "demo" };
   res.json({ success: true });
 });
 
 router.post("/logout", (req, res) => {
-  req.user = null;
+  req.session.destroy();
   res.json({ success: true });
 });
 
