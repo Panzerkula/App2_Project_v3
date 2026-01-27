@@ -1,3 +1,1 @@
-checks if user is logged in whether they want to post a new game
-or view an existing one by either returning a 401 if false, or attaching
-a user
+checks if user is logged in whether they want to post a new game or view an existing one by either returning a 401 if false, or attaching a user
