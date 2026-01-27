@@ -1,7 +1,7 @@
-import { requireAuth } from "./modules/auth_middleware.mjs"
+//import { requireAuth } from "./modules/auth_middleware.mjs"
 import express from "express";
 
-const PORT = 8080;
+const PORT = 3000;
 const app = new express();
 
 app.use(express.static('public'))
@@ -16,5 +16,5 @@ app.listen(PORT, () => {
     console.log(`Port: ${PORT}`)
 })
 
-app.post("/games", requireAuth, createGame);
-app.get("/games/:id", requireAuth, getGame);
+//app.post("/games", requireAuth, createGame);
+//app.get("/games/:id", requireAuth, getGame);
