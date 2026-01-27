@@ -1,19 +1,29 @@
-import { requireAuth } from "./modules/auth_middleware.mjs"
 import express from "express";
+import authRoutes from "./routes/auth_routes.mjs";
+import { requireAuth } from "./modules/auth_middleware.mjs";
 
+const app = express();
 const PORT = 3000;
-const app = new express();
 
-app.use(express.static('public'))
+app.use(express.json());
 
+app.use((req, res, next) => {
+  if (req.user) {
+    req.user = req.user;
+  }
+  next();
+});
+
+app.use("/auth", authRoutes);
 
 app.get('/', (req, res) => {
     res.send('SERVER KJØRER!!!!!!!!!!')
 })
 
+app.get("/games", requireAuth, (req, res) => {
+  res.json({ message: "You are logged in", user: req.user });
+});
 
 app.listen(PORT, () => {
-    console.log(`Port: ${PORT}`)
-})
-
-app.post("/games", requireAuth);
+  console.log(`Server running on port ${PORT}`);
+});
