@@ -13,7 +13,6 @@ router.post("/signup", (req, res) => {
     username,
     password,
     acceptTos,
-    acceptPrivacy
   } = req.body;
 
   if (!username || !password) {
@@ -41,8 +40,7 @@ router.post("/signup", (req, res) => {
     username,
     password,
     consent: {
-      tosAcceptedAt: new Date().toISOString(),
-      privacyAcceptedAt: new Date().toISOString()
+      tosAcceptedAt: new Date().toISOString(), //ISOString used for timezone conversion purposes
     }
   };
 

@@ -14,12 +14,11 @@ document.getElementById("signup-form").addEventListener("submit", async e => {
         username: form.username.value,
         password: form.password.value,
         acceptTos: form.acceptTos.checked,
-        acceptPrivacy: form.acceptPrivacy.checked
     };
 
     const res = await fetch("/auth/signup", {
         method: "POST",
-        //headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     });
 
@@ -44,7 +43,7 @@ document.getElementById("login-form").addEventListener("submit", async e => {
 
     const res = await fetch("/auth/login", {
         method: "POST",
-        //headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     });
 
@@ -55,6 +54,8 @@ document.getElementById("login-form").addEventListener("submit", async e => {
         loadAuthState();
     }
 });
+
+/* Need to wire up backend>frontend properly before using these handlers
 
 //-------------------Log out------------------------
 
@@ -84,6 +85,7 @@ document.getElementById("delete-account-btn").addEventListener("click", async ()
         loadAuthState();
     }
   });
+*/
 
 //--------------------Auth---------------------------
 
@@ -95,10 +97,10 @@ async function loadAuthState() {
         authSection.style.display = "none";
         appSection.style.display = "block";
         usernameSpan.textContent = user.username;
-    } else {
-        authSection.style.display = "block";
-        appSection.style.display = "none";
-    }
+    /*} else {
+        usernameSpan.textContent = "Non-user"
+    }*/
 }
 
 loadAuthState();
+}
