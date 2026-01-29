@@ -1,2 +1,0 @@
-createGame();
-requireAuth();

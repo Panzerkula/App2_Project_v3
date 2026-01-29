@@ -25,9 +25,7 @@ app.use((req, res, next) => {
 
 app.use("/auth", authRoutes);
 
-app.get('/', (req, res) => {
-    res.send('SERVER KJØRER!!!!!!!!!!')
-})
+app.use(express.static("user_app"));
 
 app.get("/games", requireAuth, (req, res) => {
   res.json({ message: "You are logged in", user: req.user });
