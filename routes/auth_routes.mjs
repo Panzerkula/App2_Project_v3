@@ -21,7 +21,7 @@ router.post("/signup", (req, res) => {
     });
   }
 
-  if (acceptTos !== true || acceptPrivacy !== true) {
+  if (acceptTos !== true) {
     return res.status(400).json({
       error: "You must accept the Terms of Service and Privacy Policy"
     });
