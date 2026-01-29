@@ -1,4 +1,5 @@
 import express from "express";
+import { requireAuth } from "../modules/auth_middleware.mjs";
 
 const router = express.Router();
 
@@ -29,6 +30,24 @@ const { username, password } = req.body;
   users.push(newUser);
 
   res.status(201).json({ success: true });
+});
+
+//---------------Delete Route---------------------------------
+
+router.delete("/me", requireAuth, (req, res) => {
+  const userId = req.session.user.id;
+
+  const index = users.findIndex(u => u.id === userId);
+
+  if (index === -1) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  users.splice(index, 1);
+
+  req.session.destroy(() => {
+    res.json({ success: true });
+  });
 });
 
 //---------------Login Route----------------------------------
