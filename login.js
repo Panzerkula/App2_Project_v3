@@ -63,7 +63,29 @@ document.getElementById("logout-btn").addEventListener("click", async () => {
     loadAuthState();
 });
 
-//-------------------Auth---------------------------
+//----------------Delete account--------------------
+
+document.getElementById("delete-account-btn").addEventListener("click", async () => {
+    const confirmed = confirm(
+        "Are you sure you want to delete your account?"
+    );
+
+    if (!confirmed) return;
+
+    const res = await fetch("/auth/me", {
+        method: "DELETE"
+    });
+
+    const result = await res.json();
+    output.textContent = JSON.stringify(result, null, 2);
+
+    if (res.ok) {
+        alert("Your account has been deleted.");
+        loadAuthState();
+    }
+  });
+
+//--------------------Auth---------------------------
 
 async function loadAuthState() {
     const res = await fetch("/auth/me");

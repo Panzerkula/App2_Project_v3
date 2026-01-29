@@ -21,11 +21,6 @@
       I accept the Terms of Service
     </label><br />
 
-    <label>
-      <input type="checkbox" name="acceptPrivacy" required />
-      I accept the Privacy Policy
-    </label><br /><br />
-
     <button type="submit">Sign Up</button>
   </form>
 
@@ -35,11 +30,13 @@
     <input name="password" type="password" required />
     <button type="submit">Login</button>
   </form>
-</section>
 
-<section id="app-section" style="display:none">
-  <h2>Welcome<span id="username"></span></h2>
+  <h2>Welcome <span id="username"></span></h2>
+
   <button id="logout-btn">Logout</button>
+  <button id="delete-account-btn" style="color:red;">
+    Delete Account
+  </button>
 </section>
 
 <pre id="output"></pre>
