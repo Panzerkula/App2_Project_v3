@@ -49,12 +49,7 @@ section {
 /* --------------------
    Forms
 -------------------- */
-
-form {
-  display: block;
-}
-
-/*input[type="username"],
+input[type="username"],
 input[type="password"] {
   width: 100%;
   padding: 8px 10px;
@@ -64,8 +59,11 @@ input[type="password"] {
   border: 1px solid #ccc;
   border-radius: 4px;
   appearance: none;
-  -webkit-appearance: none;
-}*/
+}
+
+form {
+  display: block;
+}
 
 input:focus {
   outline: none;

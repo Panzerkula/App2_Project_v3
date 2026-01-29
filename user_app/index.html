@@ -9,40 +9,54 @@
 
 <body>
 
-  <script src="user-app.mjs"></script>
-  <h1>Mexican Train Score Tracker</h1>
+  <!--Everything below must be converted to innerHTML at some point-->
 
-  <section id="auth-section">
-    <h2>Create Account</h2>
-    <form id="signup-form">
-      <input name="username" placeholder="Username" required />
-      <input name="password" type="password" placeholder="Password" required />
+  <main>
+    <h1>Mexican Train Score Tracker</h1>
 
-      <label>
-        <input type="checkbox" name="acceptTos" required />
+    <section id="signup-section">
+      <h2>Create Account</h2>
+      <form id="signup-form">
+        <input name="username" type="username" placeholder="Username" required />
+        <input name="password" type="password" placeholder="Password" required />
+
+        <label>
+          <input type="checkbox" name="acceptTos" required />
           I accept the Terms of Service
-      </label>
-      <button type="submit">Sign Up</button>
-  </form>
-  <br>
-  <p>Or if you already have an account:</p>
-  <br>
-    <h2>Login</h2>
-    <form id="login-form">
-      <input name="username" placeholder="Username" required />
-      <input name="password" type="password" placeholder="Password" required />
-      <br>
-      <br>
-      <button type="submit">Login</button>
-    </form>
+        </label>
 
-    <h2>Welcome <span id="username"></span></h2>
+        <button type="submit">Sign Up</button>
+      </form>
+    </section>
 
-    <button id="logout-btn">Logout</button>
-    <button id="delete-account-btn">Delete Account</button>
-  </section>
+    <section id="login-section">
+      <p>Or if you already have an account:</p>
 
-  <pre id="output"></pre>
+      <h2>Login</h2>
+      <form id="login-form">
+        <input name="username" type="username" placeholder="Username" required />
+        <input name="password" type="password" placeholder="Password" required />
+        <br>
+        <button type="submit">Login</button>
+      </form>
+    </section>
+
+  <!-- Need to wire in backend>frontend before this section is used
+    <section id="logoutDelete-section">
+      <h2>Welcome <span id="username"></span></h2>
+      <button id="logout-btn">Logout</button>
+      <button id="delete-account-btn">Delete Account</button>
+    </section>
+  
+  Logout button and delete account button needs to be placed at the top of the /games route, preferrably within a navigation-bar
+  -->
+
+    <pre id="output"></pre>
+  </main>
+
+  <!--Everything above must be converted to innerHTML at some point-->
+
+  <script src="user-app.mjs"></script>
 
 </body>
 </html>
