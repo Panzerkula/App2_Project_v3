@@ -8,39 +8,40 @@
 </head>
 
 <body>
+
+  <script src="user-app.mjs"></script>
   <h1>Mexican Train</h1>
 
-<section id="auth-section">
-  <h2>Create Account</h2>
-  <form id="signup-form">
-    <input name="username" placeholder="Username" required />
-    <input name="password" type="password" placeholder="Password" required />
+  <section id="auth-section">
+    <h2>Create Account</h2>
+    <form id="signup-form">
+      <input name="username" placeholder="Username" required />
+      <input name="password" type="password" placeholder="Password" required />
 
-    <label>
-      <input type="checkbox" name="acceptTos" required />
-      I accept the Terms of Service
-    </label><br />
+      <label>
+        <input type="checkbox" name="acceptTos" required />
+          I accept the Terms of Service
+      </label><br />
 
-    <button type="submit">Sign Up</button>
+      <button type="submit">Sign Up</button>
   </form>
 
-  <h2>Login</h2>
-  <form id="login-form">
-    <input name="username" placeholder="Username" required />
-    <input name="password" type="password" required />
-    <button type="submit">Login</button>
-  </form>
+    <h2>Login</h2>
+    <form id="login-form">
+      <input name="username" placeholder="Username" required />
+      <input name="password" type="password" required />
+      <button type="submit">Login</button>
+    </form>
 
-  <h2>Welcome <span id="username"></span></h2>
+    <h2>Welcome <span id="username"></span></h2>
 
-  <button id="logout-btn">Logout</button>
-  <button id="delete-account-btn" style="color:red;">
-    Delete Account
-  </button>
-</section>
+    <button id="logout-btn">Logout</button>
+    <button id="delete-account-btn" style="color:red;">
+      Delete Account
+    </button>
+  </section>
 
-<pre id="output"></pre>
+  <pre id="output"></pre>
 
-  <script src="./login.js"></script>
 </body>
 </html>
