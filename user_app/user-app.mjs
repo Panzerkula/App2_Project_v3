@@ -19,7 +19,7 @@ document.getElementById("signup-form").addEventListener("submit", async e => {
 
     const res = await fetch("/auth/signup", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        //headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     });
 
@@ -44,7 +44,7 @@ document.getElementById("login-form").addEventListener("submit", async e => {
 
     const res = await fetch("/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        //headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     });
 

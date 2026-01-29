@@ -1,0 +1,145 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 40px;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f2f2f2;
+  color: #222;
+}
+
+/* --------------------
+   Page Layout
+-------------------- */
+
+main {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* --------------------
+   Headings
+-------------------- */
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+/* --------------------
+   Sections
+-------------------- */
+
+section {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+/* --------------------
+   Forms
+-------------------- */
+
+form {
+  display: block;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #0077cc;
+}
+
+/* --------------------
+   Checkbox Labels
+-------------------- */
+
+label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* --------------------
+   Buttons
+-------------------- */
+
+button {
+  padding: 8px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #0077cc;
+  color: white;
+}
+
+form button {
+  margin-bottom: 25px;
+}
+
+button:hover {
+  background-color: #005fa3;
+}
+
+/* Logout */
+
+#logout-btn {
+  background-color: #666;
+}
+
+#logout-btn:hover {
+  background-color: #555;
+}
+
+/* Delete account */
+
+#delete-account-btn {
+  background-color: #c62828;
+  margin-left: 8px;
+}
+
+#delete-account-btn:hover {
+  background-color: #a61d1d;
+}
+
+/* --------------------
+   Logged-in Section
+-------------------- */
+
+#app-section {
+  text-align: center;
+}
+
+#app-section button {
+  margin-top: 10px;
+}
+
+/* --------------------
+   Output / Debug
+-------------------- */
+
+#output {
+  margin-top: 20px;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
