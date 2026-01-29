@@ -9,22 +9,41 @@ let nextUserId = 1;
 //---------------Signup Route------------------------------
 
 router.post("/signup", (req, res) => {
-const { username, password } = req.body;
+  const {
+    username,
+    password,
+    acceptTos,
+    acceptPrivacy
+  } = req.body;
 
   if (!username || !password) {
-    return res.status(400).json({ error: "Username and password required" });
+    return res.status(400).json({
+      error: "Username and password required"
+    });
+  }
+
+  if (acceptTos !== true || acceptPrivacy !== true) {
+    return res.status(400).json({
+      error: "You must accept the Terms of Service and Privacy Policy"
+    });
   }
 
   const existingUser = users.find(u => u.username === username);
 
   if (existingUser) {
-    return res.status(409).json({ error: "Username already taken" });
+    return res.status(409).json({
+      error: "Username already taken"
+    });
   }
 
   const newUser = {
     id: nextUserId++,
     username,
-    password
+    password,
+    consent: {
+      tosAcceptedAt: new Date().toISOString(),
+      privacyAcceptedAt: new Date().toISOString()
+    }
   };
 
   users.push(newUser);
@@ -80,8 +99,8 @@ router.post("/logout", (req, res) => {
 
 //---------------Me Route-------------------------------------
 
-router.get("/me", (req, res) => {
-  res.json(req.user || null);
+router.get("/me", requireAuth, (req, res) => {
+  res.json(req.user);
 });
 
 //------------------------------------------------------------

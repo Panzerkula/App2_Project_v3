@@ -10,25 +10,39 @@
 <body>
   <h1>Mexican Train</h1>
 
-  <section>
-    <h2>Create Account</h2>
-    <form id="signup-form">
-      <input name="username" placeholder="Username" required />
-      <input name="password" type="password" placeholder="Password" required />
-      <button type="submit">Sign Up</button>
-    </form>
-  </section>
+<section id="auth-section">
+  <h2>Create Account</h2>
+  <form id="signup-form">
+    <input name="username" placeholder="Username" required />
+    <input name="password" type="password" placeholder="Password" required />
 
-  <section>
-    <h2>Login</h2>
-    <form id="login-form">
-      <input name="username" placeholder="Username" required />
-      <input name="password" type="password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-  </section>
+    <label>
+      <input type="checkbox" name="acceptTos" required />
+      I accept the Terms of Service
+    </label><br />
 
-  <pre id="output"></pre>
+    <label>
+      <input type="checkbox" name="acceptPrivacy" required />
+      I accept the Privacy Policy
+    </label><br /><br />
+
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <h2>Login</h2>
+  <form id="login-form">
+    <input name="username" placeholder="Username" required />
+    <input name="password" type="password" required />
+    <button type="submit">Login</button>
+  </form>
+</section>
+
+<section id="app-section" style="display:none">
+  <h2>Welcome<span id="username"></span></h2>
+  <button id="logout-btn">Logout</button>
+</section>
+
+<pre id="output"></pre>
 
   <script src="./login.js"></script>
 </body>

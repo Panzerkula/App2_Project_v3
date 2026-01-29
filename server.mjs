@@ -16,13 +16,6 @@ app.use(
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  if (req.user) {
-    req.user = req.user;
-  }
-  next();
-});
-
 app.use("/auth", authRoutes);
 
 app.use(express.static("user_app"));
