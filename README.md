@@ -3,4 +3,4 @@ Fullstack Mexican Train Score-Tracker. The application will contain both user an
 
 Feature map: https://miro.com/app/board/uXjVGO-KVU0=/
 
-Project management: https://panzerkula.atlassian.net/jira/software/projects/SCRUM/settings/access
+Project management: https://panzerkula.atlassian.net/jira/software/projects/SCRUM/boards/1
