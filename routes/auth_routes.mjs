@@ -39,8 +39,9 @@ router.post("/signup", (req, res) => {
     id: nextUserId++,
     username,
     password,
+    mail,
     consent: {
-      tosAcceptedAt: new Date().toISOString(), //ISOString used for timezone conversion purposes
+      tosAcceptedAt: new Date().toISOString(),
     }
   };
 
