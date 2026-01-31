@@ -99,6 +99,7 @@ function wireSignup() {
     const payload = {
       username: signupForm.username.value,
       password: signupForm.password.value,
+      mail: signupForm.mail.value,
       acceptTos: signupForm.acceptTos.checked
     };
 

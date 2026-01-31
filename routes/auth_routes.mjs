@@ -12,6 +12,7 @@ router.post("/signup", (req, res) => {
   const {
     username,
     password,
+    mail,
     acceptTos,
   } = req.body;
 
