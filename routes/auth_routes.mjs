@@ -22,9 +22,15 @@ router.post("/signup", (req, res) => {
     });
   }
 
+  if (!mail) {
+    return res.status(400).json({
+      error: "Email required"
+    });
+  }
+
   if (acceptTos !== true) {
     return res.status(400).json({
-      error: "You must accept the Terms of Service and Privacy Policy"
+      error: "You must accept the Terms of Service"
     });
   }
 
