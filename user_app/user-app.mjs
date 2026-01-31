@@ -12,18 +12,16 @@ function loggedOutHTML() {
         <input name="username" type="text" placeholder="Username" required />
         <input name="password" type="password" placeholder="Password" required />
 
-<label>
-  <input type="checkbox" name="acceptTos" />
-  I accept the
-  <a href="#" id="tos-link">Terms of Service</a>
-</label>
+        <label>
+          <input type="checkbox" name="acceptTos" />I accept the<a href="#" id="tos-link">Terms of Service</a>
+        </label>
 
-<div id="tos-modal" class="modal hidden">
-  <div class="modal-content">
-    <button id="close-tos">&times;</button>
-    <div id="tos-body"></div>
-  </div>
-</div>
+        <div id="tos-modal" class="modal hidden">
+          <div class="modal-content">
+          <button id="close-tos">&times;</button>
+          <div id="tos-body"></div>
+        </div>
+      </div>
 
         <button type="submit">Sign Up</button>
       </form>
