@@ -2,6 +2,7 @@ import express from "express";
 import authRoutes from "./routes/auth_routes.mjs";
 import { requireAuth } from "./modules/auth_middleware.mjs";
 import session from "express-session";
+import gamesRoutes from "./routes/games_routes.mjs";
 
 const app = express();
 const PORT = 3000;
@@ -19,6 +20,8 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 
 app.use(express.static("user_app"));
+
+app.use("/games", gamesRoutes);
 
 app.get("/games", requireAuth, (req, res) => {
   res.json({ message: "You are logged in", user: req.user });
