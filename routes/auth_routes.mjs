@@ -42,6 +42,10 @@ router.post("/signup", (req, res) => {
     });
   }
 
+  if (!mail || !mail.includes("@")) {
+    return res.status(400).json({ error: "Invalid email address" });
+  }
+
   const newUser = {
     id: nextUserId++,
     username,

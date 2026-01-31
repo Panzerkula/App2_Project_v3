@@ -11,7 +11,7 @@ function loggedOutHTML() {
       <form id="signup-form">
         <input name="username" type="text" placeholder="Username" required />
         <input name="password" type="password" placeholder="Password" required />
-        <input name="mail" type="text" placeholder="Email" required />
+        <input name="mail" type="email" placeholder="Email" required />
 
         <label>
           <input type="checkbox" name="acceptTos" />I accept the <a href="#" id="tos-link">Terms of Service</a>
@@ -163,8 +163,7 @@ function wireLogout() {
 // -------------Delete Account-------------
 
 function wireDeleteAccount() {
-  const deleteAccountBtn =
-    document.getElementById("delete-account-btn");
+  const deleteAccountBtn = document.getElementById("delete-account-btn");
 
   deleteAccountBtn.addEventListener("click", async () => {
     const confirmed = confirm(
