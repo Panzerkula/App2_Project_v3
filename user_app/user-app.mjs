@@ -189,7 +189,7 @@ function wireDeleteAccount() {
 function wireTosModal() {
   const tosLink = document.getElementById("tos-link");
   const modal = document.getElementById("tos-modal");
-  const closeBtn = document.getElementById("close-tos");
+  const closeTos = document.getElementById("close-tos");
   const tosBody = document.getElementById("tos-body");
 
   tosLink.addEventListener("click", async (e) => {
@@ -204,7 +204,7 @@ function wireTosModal() {
     modal.classList.remove("hidden");
   });
 
-  closeBtn.addEventListener("click", () => {
+  closeTos.addEventListener("click", () => {
     modal.classList.add("hidden");
   });
 
