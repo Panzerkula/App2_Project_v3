@@ -216,6 +216,38 @@ collection:
             send: true
             store: true
           rebuildPath: true
+      - url: "{{ _.base_url }}/auth/me"
+        name: Edit Current User
+        meta:
+          id: req_38f2cbd93a1b47b0ac20a865211e61e4
+          created: 1770034280439
+          modified: 1770034439144
+          isPrivate: false
+          description: ""
+          sortKey: -1770034280439
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"username": "NewName",
+            	"mail": "new@mail.com"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
   - name: Games
     meta:
       id: fld_eb11aa5fcc944741a834d78b172fc650
@@ -280,11 +312,11 @@ cookieJar:
   meta:
     id: jar_4ebbca9a93253eef9bbfecbb0bce626a318ced0b
     created: 1769544995862
-    modified: 1770019820745
+    modified: 1770034745222
   cookies:
-    - id: 45b79377-9f4c-458a-955e-6dd27b09e1cf
+    - id: 115b6992-00da-4a59-b6d2-7411ad840911
       key: connect.sid
-      value: s%3AWINZlcPx1crHrpM81zcrjgPxCCX-QSK_.LO04Lk9YBdMXYKdOIRtoszT%2BncHSD%2Bopp%2B157m9WZ0k
+      value: s%3Awss45GUMH_H9b3k-taPUfTjl9POxe9ws.VKNBQ5nINXMGJfcA%2BREbn7slC2EAP2F37kodYvZq7aQ
       domain: localhost
       path: /
       secure: false
