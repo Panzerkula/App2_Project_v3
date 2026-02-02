@@ -4,14 +4,14 @@ name: Mexican Train API
 meta:
   id: wrk_a562730581984df98dcfb1fb1bc83886
   created: 1769544995857
-  modified: 1769716700845
+  modified: 1769544995857
   description: ""
 collection:
   - name: Auth
     meta:
       id: fld_dd9c14432b2444219314bb4368e7beed
       created: 1769548209002
-      modified: 1769716700837
+      modified: 1769548267943
       sortKey: -1769548209002
       description: ""
     children:
@@ -20,7 +20,7 @@ collection:
         meta:
           id: req_f520fa5765b94edea77d2954f922dca4
           created: 1769546800072
-          modified: 1769888512199
+          modified: 1770018611864
           isPrivate: false
           description: ""
           sortKey: -1769548212628
@@ -52,7 +52,7 @@ collection:
         meta:
           id: req_2e622fb767814e5fbff1740f6d093d8f
           created: 1769690696795
-          modified: 1769888502843
+          modified: 1770018611864
           isPrivate: false
           description: ""
           sortKey: -1769548212653
@@ -86,7 +86,7 @@ collection:
         meta:
           id: req_3ac6ffce3dda4b6683ca6ec996d6b386
           created: 1769700336169
-          modified: 1769729553999
+          modified: 1769700655963
           isPrivate: false
           description: ""
           sortKey: -1769548212153
@@ -109,7 +109,7 @@ collection:
         meta:
           id: req_fc6b15144ebc4400b999cae1d277eae4
           created: 1769729324839
-          modified: 1769888391064
+          modified: 1769907548729
           isPrivate: false
           description: ""
           sortKey: -1769548212553
@@ -143,7 +143,7 @@ collection:
         meta:
           id: req_9c2a17cff2254cfb9b84d6821a195b1d
           created: 1769729442851
-          modified: 1769888491277
+          modified: 1769907548729
           isPrivate: false
           description: ""
           sortKey: -1769548212353
@@ -170,20 +170,66 @@ collection:
             send: true
             store: true
           rebuildPath: true
+      - url: "{{ _.base_url }}/auth/me"
+        name: Get Current Session
+        meta:
+          id: req_df3bf49b58d24e05af783245e8600a47
+          created: 1770018632454
+          modified: 1770018777281
+          isPrivate: false
+          description: ""
+          sortKey: -1770018632454
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/auth/users"
+        name: List Users
+        meta:
+          id: req_114bc55716e84ce98698ee5127c2842f
+          created: 1770019759702
+          modified: 1770019809762
+          isPrivate: false
+          description: ""
+          sortKey: -1770019759702
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
   - name: Games
     meta:
       id: fld_eb11aa5fcc944741a834d78b172fc650
       created: 1769548240313
-      modified: 1769716700838
+      modified: 1769714932115
       sortKey: -1769548240438
       description: ""
     children:
       - url: "{{ base_url }}/games"
-        name: Get Games
+        name: List Games
         meta:
           id: req_98aafe58778c42eab71db3b01bd4bbf1
           created: 1769545687721
-          modified: 1769716700842
+          modified: 1770019795826
           isPrivate: false
           description: ""
           sortKey: -1769548263315
@@ -206,7 +252,7 @@ collection:
         meta:
           id: req_bfcbe64bcd4d4705b1f47ef40d03c5e0
           created: 1769899563967
-          modified: 1769899704926
+          modified: 1770018560025
           isPrivate: false
           description: ""
           sortKey: -1769548263415
@@ -233,12 +279,12 @@ cookieJar:
   name: Default Jar
   meta:
     id: jar_4ebbca9a93253eef9bbfecbb0bce626a318ced0b
-    created: 1769712326188
-    modified: 1769992283141
+    created: 1769544995862
+    modified: 1770019820745
   cookies:
-    - id: 50b74551-f7d0-4601-9c6f-26c271b30860
+    - id: 45b79377-9f4c-458a-955e-6dd27b09e1cf
       key: connect.sid
-      value: s%3AkaZmcOuKP_c1RvqjJB4M1sh5cl6ltIX9.Mw%2B%2BfHlNDw8qYdIVYaSsTBAx%2F2j08e5ct7p3pzSDrFA
+      value: s%3AWINZlcPx1crHrpM81zcrjgPxCCX-QSK_.LO04Lk9YBdMXYKdOIRtoszT%2BncHSD%2Bopp%2B157m9WZ0k
       domain: localhost
       path: /
       secure: false
@@ -249,7 +295,7 @@ environments:
   meta:
     id: env_4ebbca9a93253eef9bbfecbb0bce626a318ced0b
     created: 1769544995861
-    modified: 1769716700835
+    modified: 1769683935384
     isPrivate: false
   data:
     base_url: http://localhost:3000
