@@ -113,6 +113,19 @@ router.get("/me", requireAuth, (req, res) => {
   res.json(req.user);
 });
 
+//---------------List users-----------------------------------
+
+router.get("/users", requireAuth, (req, res) => {
+  const safeUsers = users.map(u => ({
+    id: u.id,
+    username: u.username,
+    mail: u.mail,
+    createdAt: u.consent?.tosAcceptedAt
+  }));
+
+  res.json(safeUsers);
+});
+
 //------------------------------------------------------------
 
 export default router;

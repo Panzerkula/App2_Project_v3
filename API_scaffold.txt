@@ -16,9 +16,9 @@ Log in:
         IF username, password combo exists{
             RETURN user logged in
         }ELSE IF username, password combo exists and is admin verified{
-            return admin logged in
+            RETURN admin logged in
         }ELSE{
-            return invalid username and/or password
+            RETURN invalid username and/or password
         }
 
 
@@ -40,8 +40,8 @@ Create game:
         }
 
 
-List games:
-    GET /games
+List games user:
+    GET /games/user
         REQUIRE user is authenticated
 
         FIND games WHERE user is a player
@@ -49,8 +49,29 @@ List games:
 
 
 List game details:
-    GET /games/:gameId
+    GET /games/user/:gameId
         REQUIRE user is authenticated
         REQUIRE user is player in game
 
         RETURN full game data
+
+
+List games admin:
+    GET /games
+        REQUIRE user is admin verified
+        
+        RETURN all games
+
+
+List admin game details:
+    GET /games/:gameId
+        REQUIRE user is admin verified
+        
+        RETURN full game data
+
+
+List users (for admins):
+    GET /auth/users
+        REQUIRE user is admin verified
+
+        RETURN all users
