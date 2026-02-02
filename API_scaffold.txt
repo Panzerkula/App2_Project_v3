@@ -3,7 +3,7 @@ Create user:
         IF username !taken, email=valid and acceptTos=true{
             CREATE new user
         }else{
-            return error
+            RETURN error
         }
 
 
@@ -14,8 +14,10 @@ Delete user:
 Log in:
     POST /auth/login
         IF username, password combo exists{
-            return logged in
-        }else{
+            RETURN user logged in
+        }ELSE IF username, password combo exists and is admin verified{
+            return admin logged in
+        }ELSE{
             return invalid username and/or password
         }
 
