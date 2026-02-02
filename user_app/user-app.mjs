@@ -66,6 +66,7 @@ function editAccountHTML(username) {
       <input name="password" type="password" placeholder="New Password" required>
       <input name="mail" type="email" placeholder="New Email" required>
       <button id="confirm-edit-btn">Confirm</button>
+      <button id="return-to-loggedIn">Return</button>
   `;
 }
 
