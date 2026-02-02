@@ -1,3 +1,5 @@
+//----------------USER ACCOUNTS---------------------
+
 Create user:
     POST /auth/signup
         IF username !taken, email=valid and acceptTos=true{
@@ -26,6 +28,7 @@ Current session:
     GET /auth/me
         RETURN session user OR null
 
+//----------------CORE APP-----------------------
 
 Create game:
     POST /games
@@ -56,6 +59,15 @@ Game details user:
         RETURN full game data
 
 
+Edit game details user:
+    PUT (or PATCH?) /games/user/:gameId
+        REQUIRE user is authenticated
+        REQUIRE user is owner of game
+
+        RETURN new full game data
+
+//-----------ADMIN STUFF (admin verification not yet implemented)----------------
+
 List games admin:
     GET /games
         REQUIRE user is admin verified
@@ -75,6 +87,13 @@ List users (for admins):
         REQUIRE user is admin verified
 
         RETURN all users
+
+
+Edit specific user:
+    PUT (or PATCH?) /auth/users/:userId
+        REQUIRE user is admin verified
+
+        RETURN user
 
 
 Delete specific user:
