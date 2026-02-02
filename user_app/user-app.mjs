@@ -50,13 +50,26 @@ function loggedInHTML(username) {
       <h2>Welcome <span id="username">${username}</span></h2>
       <button id="logout-btn">Logout</button>
       <button id="delete-account-btn">Delete Account</button>
+      <button id="edit-account-btn">Edit Account</button>
     </section>
 
     <pre id="output"></pre>
   `;
 }
 
-// ----------------Ui----------------
+function editAccountHTML(username) {
+  return `
+    <h1>Mexican Train Score Tracker</h1>
+
+    <section id="editAccount-section">
+      <input name="username" type="text" placeholder="New Username" required>
+      <input name="password" type="password" placeholder="New Password" required>
+      <input name="mail" type="email" placeholder="New Email" required>
+      <button id="confirm-edit-btn">Confirm</button>
+  `;
+}
+
+// ----------------Ui handlers----------------
 
 function showLoggedOutUI() {
   app.innerHTML = loggedOutHTML();
@@ -69,6 +82,11 @@ function showLoggedInUI(username) {
   app.innerHTML = loggedInHTML(username);
   wireLogout();
   wireDeleteAccount();
+  wireEditAccount();
+}
+
+function showEditUserUI(username) {
+  app.innerHTML = editAccountHTML(username);
 }
 
 // ----------------Check me----------------
@@ -181,6 +199,14 @@ function wireDeleteAccount() {
       showLoggedOutUI();
     }
   });
+}
+
+function wireEditAccount() {
+  const editAccountBtn = document.getElementById("edit-account-btn");
+
+  editAccountBtn.addEventListener("click", async() => {
+    showEditUserUI();
+  })
 }
 
 // ------------ToS-------------------
