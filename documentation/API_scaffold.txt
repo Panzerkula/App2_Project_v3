@@ -7,7 +7,7 @@ Create user:
         }
 
 
-Delete user:
+Delete own user:
     DELETE /auth/signup/me
 
 
@@ -81,6 +81,6 @@ Delete specific user:
     DELETE /auth/users/:userId
         REQUIRE user is admin verified
 
-        RETURN all users
+        RETURN remaining users
 
 

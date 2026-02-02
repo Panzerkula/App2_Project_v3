@@ -107,7 +107,7 @@ router.post("/logout", (req, res) => {
   res.json({ success: true });
 });
 
-//---------------Me Route-------------------------------------
+//-------------Current session-----------------------------------
 
 router.get("/me", requireAuth, (req, res) => {
   res.json(req.user);
