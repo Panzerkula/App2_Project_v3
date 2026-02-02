@@ -48,7 +48,7 @@ List games user:
         RETURN game summaries
 
 
-List game details:
+Game details user:
     GET /games/user/:gameId
         REQUIRE user is authenticated
         REQUIRE user is player in game
@@ -63,7 +63,7 @@ List games admin:
         RETURN all games
 
 
-List admin game details:
+Admin game details:
     GET /games/:gameId
         REQUIRE user is admin verified
         
@@ -75,3 +75,12 @@ List users (for admins):
         REQUIRE user is admin verified
 
         RETURN all users
+
+
+Delete specific user:
+    DELETE /auth/users/:userId
+        REQUIRE user is admin verified
+
+        RETURN all users
+
+
