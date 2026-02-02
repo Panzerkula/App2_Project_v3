@@ -202,6 +202,8 @@ function wireDeleteAccount() {
   });
 }
 
+// --------------Edit account---------------
+
 function wireEditAccount() {
   const editAccountBtn = document.getElementById("edit-account-btn");
 
@@ -210,7 +212,7 @@ function wireEditAccount() {
   })
 }
 
-// ------------ToS-------------------
+// ------------------ToS-------------------
 
 function wireTosModal() {
   const tosLink = document.getElementById("tos-link");
