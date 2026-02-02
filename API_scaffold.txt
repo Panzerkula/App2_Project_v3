@@ -1,3 +1,25 @@
+Create user:
+    POST /auth/signup
+        IF username !taken, email=valid and acceptTos=true{
+            CREATE new user
+        }else{
+            return error
+        }
+
+
+Delete user:
+    DELETE /auth/signup/me
+
+
+Log in:
+    POST /auth/login
+        IF username, password combo exists{
+            return logged in
+        }else{
+            return invalid username and/or password
+        }
+
+
 Current session:
     GET /auth/me
         RETURN session user OR null
