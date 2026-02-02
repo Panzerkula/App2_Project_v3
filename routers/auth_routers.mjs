@@ -6,7 +6,7 @@ const router = express.Router();
 const users = [];
 let nextUserId = 1;
 
-//---------------Signup Route------------------------------
+//---------------Signup Router------------------------------
 
 router.post("/signup", (req, res) => {
   const {
@@ -61,7 +61,7 @@ router.post("/signup", (req, res) => {
   res.status(201).json({ success: true });
 });
 
-//---------------Delete Route---------------------------------
+//---------------Delete Router---------------------------------
 
 router.delete("/me", requireAuth, (req, res) => {
   const userId = req.session.user.id;
@@ -79,7 +79,43 @@ router.delete("/me", requireAuth, (req, res) => {
   });
 });
 
-//---------------Login Route----------------------------------
+//---------------Edit user Router------------------------------
+
+router.put("/me", requireAuth, (req, res) => {
+  const userId = req.session.user.id;
+  const { username, password, mail } = req.body;
+
+  const user = users.find(u => u.id === userId);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  if (username) {
+    const usernameTaken = users.some(
+      u => u.username === username && u.id !== userId
+    );
+
+    if (usernameTaken) {
+      return res.status(409).json({ error: "Username already taken" });
+    }
+
+    user.username = username;
+    req.session.user.username = username;
+  }
+
+  if (mail) {
+    user.mail = mail;
+  }
+
+  if (password) {
+    user.password = password;
+  }
+
+  res.json({ success: true });
+});
+
+//---------------Login Router----------------------------------
 
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
@@ -100,20 +136,20 @@ router.post("/login", (req, res) => {
   res.json({ success: true });
 });
 
-//---------------Logout Route---------------------------------
+//---------------Logout Router------------------------------------------
 
 router.post("/logout", (req, res) => {
   req.session.destroy();
   res.json({ success: true });
 });
 
-//-------------Current session-----------------------------------
+//-------------Current session router-----------------------------------
 
 router.get("/me", requireAuth, (req, res) => {
   res.json(req.user);
 });
 
-//---------------List users-----------------------------------
+//---------------List users router-----------------------------------
 
 router.get("/users", requireAuth, (req, res) => {
   const safeUsers = users.map(u => ({
