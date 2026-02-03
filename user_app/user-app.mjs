@@ -3,7 +3,25 @@ let currentUser = null;
 
 // --------------innerHTML----------------
 
-function loggedOutHTML() {
+function signInHTML() {
+  return `
+    <h1>Mexican Train Score Tracker</h1>
+
+    <section id="login-section">
+      <h2>Login</h2>
+      <form id="login-form">
+        <input name="username" type="text" placeholder="Username" required />
+        <input name="password" type="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <p>Don't have an account? Click <a href="#" id="create-account-link">here</p>
+      </form>
+    </section>
+
+    <pre id="output"></pre>
+  `
+}
+
+function signUpHTML() {
   return `
     <h1>Mexican Train Score Tracker</h1>
 
@@ -15,34 +33,28 @@ function loggedOutHTML() {
         <input name="mail" type="email" placeholder="Email" required />
 
         <label>
-          <input type="checkbox" name="acceptTos" />I accept the <a href="#" id="tos-link">Terms of Service</a>
+          <input type="checkbox" name="acceptTos" />
+          I accept the <a href="#" id="tos-link">Terms of Service</a>
         </label>
-
-        <div id="tos-modal" class="modal hidden">
-          <div class="modal-content">
-          <button id="close-tos">&times;</button>
-          <div id="tos-body"></div>
-        </div>
-      </div>
 
         <button type="submit">Sign Up</button>
       </form>
-    </section>
 
-    <section id="login-section">
-      <p>Or if you already have an account:</p>
-      <h2>Login</h2>
-      <form id="login-form">
-        <input name="username" type="text" placeholder="Username" required />
-        <input name="password" type="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-      </form>
+      <p>
+        Already have an account?
+        <a href="#" id="back-to-signin-link">Back to sign in</a>
+      </p>
     </section>
-
-    <pre id="output"></pre>
-  `;
+    <div id="tos-modal" class="modal hidden">
+      <div class="modal-content">
+      <button id="close-tos">&times;</button>
+      <div id="tos-body"></div>
+    </div>
+  </div>
+  
+  <pre id="output"></pre>
+`;
 }
-
 function loggedInHTML(username) {
   return `
     <h1>Mexican Train Score Tracker</h1>
@@ -80,11 +92,17 @@ function editAccountHTML() {
 
 // ----------------Ui handlers----------------
 
-function showLoggedOutUI() {
-  app.innerHTML = loggedOutHTML();
+function showSignUp() {
+  app.innerHTML = signUpHTML();
   wireSignup();
-  wireLogin();
   wireTosModal();
+  wireBackToSignIn();
+}
+
+function showSignIn() {
+  app.innerHTML = signInHTML();
+  wireLogin();
+  wireCreateAccountLink();
 }
 
 function showLoggedInUI(username) {
@@ -108,7 +126,7 @@ async function loadCurrentUser() {
   });
 
   if (!res.ok) {
-    showLoggedOutUI();
+    showSignIn();
     return;
   }
 
@@ -142,6 +160,19 @@ function wireSignup() {
 
     const data = await res.json();
     output.textContent = JSON.stringify(data, null, 2);
+
+    if (res.ok) {
+      showSignIn();
+    }
+  });
+}
+
+function wireCreateAccountLink() {
+  const link = document.getElementById("create-account-link");
+
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    showSignUp();
   });
 }
 
@@ -175,6 +206,15 @@ function wireLogin() {
   });
 }
 
+function wireBackToSignIn() {
+  const link = document.getElementById("back-to-signin-link");
+
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    showSignIn();
+  });
+}
+
 // ----------------Logout----------------
 
 function wireLogout() {
@@ -186,7 +226,7 @@ function wireLogout() {
       credentials: "same-origin"
     });
 
-    showLoggedOutUI();
+    showSignIn();
   });
 }
 
@@ -208,7 +248,7 @@ function wireDeleteAccount() {
     });
 
     if (res.ok) {
-      showLoggedOutUI();
+      showSignIn();
     }
   });
 }
