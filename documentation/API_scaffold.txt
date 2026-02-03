@@ -12,8 +12,10 @@ Create user:
 Delete own user:
     DELETE /auth/me
 
+
 Edit own user:
     PUT /auth/me
+
 
 Log in:
     POST /auth/login
