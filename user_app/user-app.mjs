@@ -58,7 +58,7 @@ function loggedInHTML(username) {
   `;
 }
 
-function editAccountHTML(user) {
+function editAccountHTML() {
   return `
     <h1>Mexican Train Score Tracker</h1>
 
@@ -66,9 +66,8 @@ function editAccountHTML(user) {
       <h2>Edit Account</h2>
 
       <form id="edit-form">
-        <input name="username" type="text" placeholder="New username" />
-        <input name="password" type="password" placeholder="New password" />
-        <input name="mail" type="email" placeholder="New Email" />
+        <input name="username" type="text" placeholder="New username (optional)" />
+        <input name="password" type="password" placeholder="New password (optional)" />
 
         <button type="submit">Confirm</button>
         <button type="button" id="return-to-loggedIn">Return</button>
@@ -233,8 +232,7 @@ function wireEditForm() {
 
     const payload = {
       username: editForm.username.value || undefined,
-      password: editForm.password.value || undefined,
-      mail: editForm.mail.value || undefined
+      password: editForm.password.value || undefined
     };
 
     const res = await fetch("/auth/me", {

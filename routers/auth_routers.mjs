@@ -83,7 +83,7 @@ router.delete("/me", requireAuth, (req, res) => {
 
 router.put("/me", requireAuth, (req, res) => {
   const userId = req.session.user.id;
-  const { username, password, mail } = req.body;
+  const { username, password } = req.body;
 
   const user = users.find(u => u.id === userId);
 
@@ -102,10 +102,6 @@ router.put("/me", requireAuth, (req, res) => {
 
     user.username = username;
     req.session.user.username = username;
-  }
-
-  if (mail) {
-    user.mail = mail;
   }
 
   if (password) {
