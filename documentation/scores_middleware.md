@@ -1,1 +1,1 @@
-Returns a 400 if the score is below 0 or not an object
+Returns a 400 if the score is null or not an object
