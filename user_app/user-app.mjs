@@ -1,4 +1,5 @@
 const app = document.getElementById("app");
+let currentUser = null;
 
 // --------------innerHTML----------------
 
@@ -57,16 +58,24 @@ function loggedInHTML(username) {
   `;
 }
 
-function editAccountHTML(username) {
+function editAccountHTML(user) {
   return `
     <h1>Mexican Train Score Tracker</h1>
 
     <section id="editAccount-section">
-      <input name="username" type="text" placeholder="New Username" required>
-      <input name="password" type="password" placeholder="New Password" required>
-      <input name="mail" type="email" placeholder="New Email" required>
-      <button id="confirm-edit-btn">Confirm</button>
-      <button id="return-to-loggedIn">Return</button>
+      <h2>Edit Account</h2>
+
+      <form id="edit-form">
+        <input name="username" type="text" placeholder="New username" />
+        <input name="password" type="password" placeholder="New password" />
+        <input name="mail" type="email" placeholder="New Email" />
+
+        <button type="submit">Confirm</button>
+        <button type="button" id="return-to-loggedIn">Return</button>
+      </form>
+    </section>
+
+    <pre id="output"></pre>
   `;
 }
 
@@ -86,8 +95,10 @@ function showLoggedInUI(username) {
   wireEditAccount();
 }
 
-function showEditUserUI(username) {
-  app.innerHTML = editAccountHTML(username);
+function showEditUserUI(user) {
+  app.innerHTML = editAccountHTML(user);
+  wireEditForm();
+  wireReturnFromEdit();
 }
 
 // ----------------Check me----------------
@@ -103,6 +114,7 @@ async function loadCurrentUser() {
   }
 
   const user = await res.json();
+  currentUser = user;
   showLoggedInUI(user.username);
 }
 
@@ -207,9 +219,46 @@ function wireDeleteAccount() {
 function wireEditAccount() {
   const editAccountBtn = document.getElementById("edit-account-btn");
 
-  editAccountBtn.addEventListener("click", async() => {
-    showEditUserUI();
-  })
+  editAccountBtn.addEventListener("click", () => {
+    showEditUserUI(currentUser);
+  });
+}
+
+function wireEditForm() {
+  const editForm = document.getElementById("edit-form");
+  const output = document.getElementById("output");
+
+  editForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      username: editForm.username.value || undefined,
+      password: editForm.password.value || undefined,
+      mail: editForm.mail.value || undefined
+    };
+
+    const res = await fetch("/auth/me", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    output.textContent = JSON.stringify(data, null, 2);
+
+    if (res.ok) {
+      await loadCurrentUser();
+    }
+  });
+}
+
+function wireReturnFromEdit() {
+  const returnBtn = document.getElementById("return-to-loggedIn");
+
+  returnBtn.addEventListener("click", () => {
+    showLoggedInUI(currentUser.username);
+  });
 }
 
 // ------------------ToS-------------------
