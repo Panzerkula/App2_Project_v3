@@ -100,46 +100,48 @@ function editAccountHTML() {
 
 function gameDetailHTML(game) {
   return `
-    <h2>Game #${game.id}</h2>
-    <p>Status: ${game.status}</p>
+    <h1>Mexican Train Score Tracker</h1>
+    <section id="detailView-section"
+      <h2>Game #${game.id}</h2>
+      <p>Status: ${game.status}</p>
 
-    <h3>Players</h3>
-    <ul id="players-list">
-      ${game.players.map(p =>
-      `<li>${p.username}</li>`).join("")}
-    </ul>
+      <h3>Players</h3>
+      <ul id="players-list">
+        ${game.players.map(p =>
+        `<li>${p.username}</li>`).join("")}
+      </ul>
 
-    <h3>Add Player</h3>
-    <input id="new-player-name" placeholder="Username" />
-    <button id="add-player-btn">Add Player</button>
+      <h3>Add Player</h3>
+      <input id="new-player-name" type="text" placeholder="Username" />
+      <button id="add-player-btn">Add Player</button>
 
-    <h3>Scores</h3>
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Player</th>
-          ${game.players[0]?.scores.map((_, i) =>
-          `<th>Round ${i + 1}</th>`).join("")}
-        </tr>
-      </thead>
-      <tbody>
-        ${game.players.map(p => `
-        <tr>
-          <td>${p.username}
-          </td>${p.scores.map(s => `
-        <td>${s}</td>`).join("")}
-        </tr>`).join("")}
-      </tbody>
-    </table>
+      <h3>Scores</h3>
+      <table border="0.1">
+        <thead>
+          <tr>
+            <th>Player</th>
+            ${game.players[0]?.scores.map((_, i) =>
+            `<th>Round ${i + 1}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
+          ${game.players.map(p => `
+          <tr>
+            <td>${p.username}
+            </td>${p.scores.map(s => `
+          <td>${s}</td>`).join("")}
+          </tr>`).join("")}
+        </tbody>
+      </table>
 
-    <h3>Add Round</h3>
-    <div id="score-inputs">
-      ${game.players.map(p =>
-      `<div>${p.username}:<input type="number" data-user="${p.username}" /></div>
-      `).join("")}
-    </div>
-    <button id="add-round-btn">Add Round</button>
-    <button id="back-to-dashboard">Home</button>
+      <h3>Add Round</h3>
+      <div id="score-inputs">
+        ${game.players.map(p =>
+        `<div>${p.username}:<input type="number" data-user="${p.username}" /></div>
+        `).join("")}
+      </div>
+      <button id="add-round-btn">Add Round</button>
+      <button id="back-to-dashboard">Home</button>
   `;
 }
 

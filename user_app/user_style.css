@@ -51,7 +51,8 @@ section {
 -------------------- */
 input[type="text"],
 input[type="password"],
-input[type="email"] {
+input[type="email"],
+input[type="number"] {
   width: 100%;
   padding: 8px 10px;
   margin-bottom: 12px;
@@ -210,4 +211,23 @@ button:hover {
 
 #games-list li:hover {
   background: #f0f0f0;
+}
+
+/* Game Detail Table */
+
+#game-detail-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px; 
+}
+
+#game-detail-section th,
+#game-detail-section td {
+  border: 1px solid #ccc;
+  padding: 6px 8px;
+  text-align: center; }
+
+#game-detail-section th {
+  background: #f7f7f7;
+  font-weight: bold;
 }
