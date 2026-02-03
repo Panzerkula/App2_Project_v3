@@ -4,14 +4,14 @@ name: Mexican Train API
 meta:
   id: wrk_a562730581984df98dcfb1fb1bc83886
   created: 1769544995857
-  modified: 1769544995857
+  modified: 1769716700845
   description: ""
 collection:
   - name: Auth
     meta:
       id: fld_dd9c14432b2444219314bb4368e7beed
       created: 1769548209002
-      modified: 1769548267943
+      modified: 1769716700837
       sortKey: -1769548209002
       description: ""
     children:
@@ -20,18 +20,18 @@ collection:
         meta:
           id: req_f520fa5765b94edea77d2954f922dca4
           created: 1769546800072
-          modified: 1770018611864
+          modified: 1770157902582
           isPrivate: false
           description: ""
           sortKey: -1769548212628
         method: POST
         body:
           mimeType: application/json
-          text: |-
-            {
-              "username": "panzerkula",
-              "password": "1234"
-            }
+          text: |2-
+              {
+            		"username": "panzerkula",
+              	"password": "1234"
+            	}
         headers:
           - name: Content-Type
             value: application/json
@@ -52,7 +52,7 @@ collection:
         meta:
           id: req_2e622fb767814e5fbff1740f6d093d8f
           created: 1769690696795
-          modified: 1770018611864
+          modified: 1769888502843
           isPrivate: false
           description: ""
           sortKey: -1769548212653
@@ -86,7 +86,7 @@ collection:
         meta:
           id: req_3ac6ffce3dda4b6683ca6ec996d6b386
           created: 1769700336169
-          modified: 1769700655963
+          modified: 1769729553999
           isPrivate: false
           description: ""
           sortKey: -1769548212153
@@ -109,7 +109,7 @@ collection:
         meta:
           id: req_fc6b15144ebc4400b999cae1d277eae4
           created: 1769729324839
-          modified: 1769907548729
+          modified: 1769888391064
           isPrivate: false
           description: ""
           sortKey: -1769548212553
@@ -143,7 +143,7 @@ collection:
         meta:
           id: req_9c2a17cff2254cfb9b84d6821a195b1d
           created: 1769729442851
-          modified: 1769907548729
+          modified: 1769888491277
           isPrivate: false
           description: ""
           sortKey: -1769548212353
@@ -175,7 +175,7 @@ collection:
         meta:
           id: req_df3bf49b58d24e05af783245e8600a47
           created: 1770018632454
-          modified: 1770018777281
+          modified: 1770117258947
           isPrivate: false
           description: ""
           sortKey: -1770018632454
@@ -198,12 +198,17 @@ collection:
         meta:
           id: req_114bc55716e84ce98698ee5127c2842f
           created: 1770019759702
-          modified: 1770019809762
+          modified: 1770122895702
           isPrivate: false
           description: ""
           sortKey: -1770019759702
         method: GET
+        body:
+          mimeType: application/json
+          text: ""
         headers:
+          - name: Content-Type
+            value: application/json
           - name: User-Agent
             value: insomnia/12.3.0
             description: ""
@@ -221,7 +226,7 @@ collection:
         meta:
           id: req_38f2cbd93a1b47b0ac20a865211e61e4
           created: 1770034280439
-          modified: 1770034439144
+          modified: 1770122836935
           isPrivate: false
           description: ""
           sortKey: -1770034280439
@@ -231,7 +236,7 @@ collection:
           text: |-
             {
             	"username": "NewName",
-            	"mail": "new@mail.com"
+            	"password": "NewPassword"
             }
         headers:
           - name: Content-Type
@@ -252,16 +257,16 @@ collection:
     meta:
       id: fld_eb11aa5fcc944741a834d78b172fc650
       created: 1769548240313
-      modified: 1769714932115
+      modified: 1769716700838
       sortKey: -1769548240438
       description: ""
     children:
       - url: "{{ base_url }}/games"
-        name: List Games
+        name: List My Games
         meta:
           id: req_98aafe58778c42eab71db3b01bd4bbf1
           created: 1769545687721
-          modified: 1770019795826
+          modified: 1770158129446
           isPrivate: false
           description: ""
           sortKey: -1769548263315
@@ -284,7 +289,7 @@ collection:
         meta:
           id: req_bfcbe64bcd4d4705b1f47ef40d03c5e0
           created: 1769899563967
-          modified: 1770018560025
+          modified: 1769899704926
           isPrivate: false
           description: ""
           sortKey: -1769548263415
@@ -307,16 +312,47 @@ collection:
             send: true
             store: true
           rebuildPath: true
+      - url: "{{ _.base_url }}/auth/games/:id"
+        name: Trying to hack specific games
+        meta:
+          id: req_efeb75623efa4b00927cea15f513f926
+          created: 1770158183655
+          modified: 1770159071832
+          isPrivate: false
+          description: ""
+          sortKey: -1769548263515
+        method: GET
+        body:
+          mimeType: application/json
+          text: ""
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+        pathParameters:
+          - name: id
+            value: ""
 cookieJar:
   name: Default Jar
   meta:
     id: jar_4ebbca9a93253eef9bbfecbb0bce626a318ced0b
-    created: 1769544995862
-    modified: 1770034745222
+    created: 1769712326188
+    modified: 1770157928318
   cookies:
-    - id: 115b6992-00da-4a59-b6d2-7411ad840911
+    - id: c7bff982-86db-44bb-a582-cd932162f1ff
       key: connect.sid
-      value: s%3Awss45GUMH_H9b3k-taPUfTjl9POxe9ws.VKNBQ5nINXMGJfcA%2BREbn7slC2EAP2F37kodYvZq7aQ
+      value: s%3AdBPs3Ky_xBqqCkoHI8xb-zFZ8NRzUwbG.j2sTpGD1%2F0KAx7POxouu2FG177WEUPX5c7BpTqkW08g
       domain: localhost
       path: /
       secure: false
@@ -327,7 +363,7 @@ environments:
   meta:
     id: env_4ebbca9a93253eef9bbfecbb0bce626a318ced0b
     created: 1769544995861
-    modified: 1769683935384
+    modified: 1769716700835
     isPrivate: false
   data:
     base_url: http://localhost:3000
