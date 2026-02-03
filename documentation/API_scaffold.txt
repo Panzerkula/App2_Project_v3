@@ -10,8 +10,10 @@ Create user:
 
 
 Delete own user:
-    DELETE /auth/signup/me
+    DELETE /auth/me
 
+Edit own user:
+    PUT /auth/me
 
 Log in:
     POST /auth/login
@@ -52,7 +54,7 @@ List games user:
 
 
 Game details user:
-    GET /games/user/:gameId
+    GET /games/user/games/:gameId
         REQUIRE user is authenticated
         REQUIRE user is player in game
 
@@ -60,7 +62,7 @@ Game details user:
 
 
 Edit game details user:
-    PUT (or PATCH?) /games/user/:gameId
+    PUT /games/user/games/:gameId
         REQUIRE user is authenticated
         REQUIRE user is owner of game
 
@@ -83,14 +85,14 @@ Admin game details:
 
 
 List users (for admins):
-    GET /auth/users (Might switch endpoint to /users eventually)
+    GET /auth/users
         REQUIRE user is admin verified
 
         RETURN all users
 
 
-Edit specific user: (Might switch endpoint to /users/:userId eventually)
-    PUT (or PATCH?) /auth/users/:userId
+Edit specific user:
+    PUT /auth/users/:userId
         REQUIRE user is admin verified
 
         RETURN user
