@@ -34,7 +34,7 @@ function signUpHTML() {
 
         <label>
           <input type="checkbox" name="acceptTos" />
-          I accept the <a href="#" id="tos-link">Terms of Service</a>
+          I accept the <a href="#" id="tos-link">Terms of Service and Data Privacy Policy</a>
         </label>
 
         <button type="submit">Sign Up</button>
@@ -47,20 +47,22 @@ function signUpHTML() {
     </section>
     <div id="tos-modal" class="modal hidden">
       <div class="modal-content">
-      <button id="close-tos">&times;</button>
-      <div id="tos-body"></div>
+        <button id="close-tos">&times;</button>
+          <pre id="tos-body"></pre>
+        </div>
+      </div>
     </div>
-  </div>
-  
-  <pre id="output"></pre>
-`;
+
+    <pre id="output"></pre>
+  `;
 }
+
 function loggedInHTML(username) {
   return `
     <h1>Mexican Train Score Tracker</h1>
 
     <section id="logoutDelete-section">
-      <h2>Welcome <span id="username">${username}</span></h2>
+      <h2>Welcome, <span id="username">${username}</span></h2>
       <button id="logout-btn">Logout</button>
       <button id="delete-account-btn">Delete Account</button>
       <button id="edit-account-btn">Edit Account</button>
@@ -105,14 +107,14 @@ function showSignIn() {
   wireCreateAccountLink();
 }
 
-function showLoggedInUI(username) {
+function showDasboard(username) {
   app.innerHTML = loggedInHTML(username);
   wireLogout();
   wireDeleteAccount();
   wireEditAccount();
 }
 
-function showEditUserUI(user) {
+function showEditUser(user) {
   app.innerHTML = editAccountHTML(user);
   wireEditForm();
   wireReturnFromEdit();
@@ -132,7 +134,7 @@ async function loadCurrentUser() {
 
   const user = await res.json();
   currentUser = user;
-  showLoggedInUI(user.username);
+  showDasboard(user.username);
 }
 
 // ----------------Signup----------------
@@ -259,7 +261,7 @@ function wireEditAccount() {
   const editAccountBtn = document.getElementById("edit-account-btn");
 
   editAccountBtn.addEventListener("click", () => {
-    showEditUserUI(currentUser);
+    showEditUser(currentUser);
   });
 }
 
@@ -295,7 +297,7 @@ function wireReturnFromEdit() {
   const returnBtn = document.getElementById("return-to-loggedIn");
 
   returnBtn.addEventListener("click", () => {
-    showLoggedInUI(currentUser.username);
+    showDasboard(currentUser.username);
   });
 }
 
@@ -312,6 +314,7 @@ function wireTosModal() {
 
     if (!tosBody.textContent) {
       const res = await fetch("/terms_of_service.md");
+      console.log("ToS status:", res.status);
       const text = await res.text();
       tosBody.textContent = text;
     }
