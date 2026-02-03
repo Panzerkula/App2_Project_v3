@@ -61,8 +61,14 @@ function loggedInHTML(username) {
   return `
     <h1>Mexican Train Score Tracker</h1>
 
-    <section id="logoutDelete-section">
+    <section id="dashboard-section">
       <h2>Welcome, <span id="username">${username}</span></h2>
+
+      <button id="create-game-btn">+ New Game</button>
+
+      <h3>Your Games</h3>
+      <ul id="games-list"></ul>
+
       <button id="logout-btn">Logout</button>
       <button id="delete-account-btn">Delete Account</button>
       <button id="edit-account-btn">Edit Account</button>
@@ -109,9 +115,13 @@ function showSignIn() {
 
 function showDasboard(username) {
   app.innerHTML = loggedInHTML(username);
+
   wireLogout();
   wireDeleteAccount();
   wireEditAccount();
+  wireCreateGame();
+
+  loadGames();
 }
 
 function showEditUser(user) {
@@ -333,6 +343,71 @@ function wireTosModal() {
   });
 }
 
-//-----------------------------------------------
+//-----------------Create game------------------------
+
+function wireCreateGame() {
+  const btn = document.getElementById("create-game-btn");
+
+  btn.addEventListener("click", async () => {
+    const res = await fetch("/games", {
+      method: "POST",
+      credentials: "same-origin"
+    });
+
+    if (!res.ok) {
+      alert("Failed to create game");
+      return;
+    }
+
+    await loadGames();
+  });
+}
+
+//------------------Load games------------------------
+
+async function loadGames() {
+  const list = document.getElementById("games-list");
+  list.innerHTML = "<li>Loading...</li>";
+
+  const res = await fetch("/games", {
+    credentials: "same-origin"
+  });
+
+  if (!res.ok) {
+    list.innerHTML = "<li>Failed to load games</li>";
+    return;
+  }
+
+  const games = await res.json();
+
+  if (games.length === 0) {
+    list.innerHTML = "<li>No games yet</li>";
+    return;
+  }
+
+  list.innerHTML = "";
+
+  for (const game of games) {
+    const li = document.createElement("li");
+    li.textContent = `Game #${game.id} (${game.status})`;
+
+    li.addEventListener("click", () => {
+      selectGame(game.id);
+    });
+
+    list.appendChild(li);
+  }
+}
+
+//-----------------Game Details-----------------
+
+function selectGame(gameId) {
+  console.log("Selected game:", gameId);
+
+  //fetch(`/games/${gameId}`)
+  //showGameDetails(game)
+
+  alert(`Game ${gameId} selected (Not quite there yet)`);
+}
 
 loadCurrentUser();

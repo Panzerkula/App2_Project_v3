@@ -191,3 +191,23 @@ button:hover {
   font-size: 22px;
   cursor: pointer;
 }
+
+/* --------------------
+        Games
+-------------------- */
+
+#games-list {
+  list-style: none;
+  padding: 0;
+}
+
+#games-list li {
+  padding: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+#games-list li:hover {
+  background: #f0f0f0;
+}
