@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../modules/auth_middleware.mjs";
+import { validateRoundScores } from "../modules/scores_middleware.mjs";
 
 const router = express.Router();
 
@@ -64,6 +65,53 @@ router.get("/:id", requireAuth, (req, res) => {
   res.json(game);
 });
 
-//----------------------------------------------------
+//------------------Add player---------------------
+
+router.post("/:id/players", requireAuth, (req, res) => {
+  const gameId = Number(req.params.id);
+  const { username } = req.body;
+
+  const game = games.find(g => g.id === gameId);
+  if (!game) return res.status(404).json({ error: "Game not found" });
+
+  const alreadyInGame = game.players.some(p => p.username === username);
+  if (alreadyInGame) {
+    return res.status(409).json({ error: "Player already in game" });
+  }
+
+  game.players.push({
+    userId: null,
+    username,
+    scores: []
+  });
+
+  res.status(201).json(game);
+});
+
+//------------------Add scores-----------------------
+
+router.post("/:id/scores",requireAuth,validateRoundScores,(req, res) => {
+  const gameId = Number(req.params.id);
+  const { scores } = req.body;
+  const game = games.find(g => g.id === gameId);
+  
+  if (!game) {
+    return res.status(404).json({ error: "Game not found" });
+  }
+
+  for (const { username, score } of scores) {
+    const player = game.players.find(p => p.username === username);
+    if (!player) continue;
+      player.scores.push(score);
+    }
+
+    if (scores.length !== game.players.length) {
+      return res.status(400).json({
+      error: "Scores must be provided for all players"
+    });
+  }
+
+  res.json(game);
+});
 
 export default router;

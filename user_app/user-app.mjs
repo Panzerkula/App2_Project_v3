@@ -98,6 +98,51 @@ function editAccountHTML() {
   `;
 }
 
+function gameDetailHTML(game) {
+  return `
+    <h2>Game #${game.id}</h2>
+    <p>Status: ${game.status}</p>
+
+    <h3>Players</h3>
+    <ul id="players-list">
+      ${game.players.map(p =>
+      `<li>${p.username}</li>`).join("")}
+    </ul>
+
+    <h3>Add Player</h3>
+    <input id="new-player-name" placeholder="Username" />
+    <button id="add-player-btn">Add Player</button>
+
+    <h3>Scores</h3>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Player</th>
+          ${game.players[0]?.scores.map((_, i) =>
+          `<th>Round ${i + 1}</th>`).join("")}
+        </tr>
+      </thead>
+      <tbody>
+        ${game.players.map(p => `
+        <tr>
+          <td>${p.username}
+          </td>${p.scores.map(s => `
+        <td>${s}</td>`).join("")}
+        </tr>`).join("")}
+      </tbody>
+    </table>
+
+    <h3>Add Round</h3>
+    <div id="score-inputs">
+      ${game.players.map(p =>
+      `<div>${p.username}:<input type="number" data-user="${p.username}" /></div>
+      `).join("")}
+    </div>
+    <button id="add-round-btn">Add Round</button>
+    <button id="back-to-dashboard">Home</button>
+  `;
+}
+
 // ----------------Ui handlers----------------
 
 function showSignUp() {
@@ -128,6 +173,14 @@ function showEditUser(user) {
   app.innerHTML = editAccountHTML(user);
   wireEditForm();
   wireReturnFromEdit();
+}
+
+function showGameDetail(game) {
+  app.innerHTML = gameDetailHTML(game);
+
+  wireBackToDashboard();
+  wireAddPlayer(game.id);
+  wireAddRound(game.id);
 }
 
 // ----------------Check me----------------
@@ -401,13 +454,85 @@ async function loadGames() {
 
 //-----------------Game Details-----------------
 
-function selectGame(gameId) {
-  console.log("Selected game:", gameId);
+async function selectGame(gameId) {
+  const res = await fetch(`/games/${gameId}`, {
+    credentials: "same-origin"
+  });
 
-  //fetch(`/games/${gameId}`)
-  //showGameDetails(game)
+  if (!res.ok) {
+    alert("Failed to load game");
+    return;
+  }
 
-  alert(`Game ${gameId} selected (Not quite there yet)`);
+  const game = await res.json();
+  showGameDetail(game);
 }
+
+//------------------Add player------------------
+
+function wireAddPlayer(gameId) {
+  const btn = document.getElementById("add-player-btn");
+  const input = document.getElementById("new-player-name");
+
+  btn.addEventListener("click", async () => {
+    const username = input.value.trim();
+    if (!username) return;
+
+    const res = await fetch(`/games/${gameId}/players`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ username })
+    });
+
+    if (!res.ok) {
+      alert("Could not add player");
+      return;
+    }
+
+    selectGame(gameId);
+  });
+}
+
+//-----------------Add round---------------------
+
+function wireAddRound(gameId) {
+  const btn = document.getElementById("add-round-btn");
+
+  btn.addEventListener("click", async () => {
+    const inputs = document.querySelectorAll("#score-inputs input");
+
+    const scores = [...inputs].map(input => ({
+      username: input.dataset.user,
+      score: Number(input.value || 0)
+    }));
+
+    const res = await fetch(`/games/${gameId}/scores`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ scores })
+    });
+
+    if (!res.ok) {
+      alert("Failed to add scores");
+      return;
+    }
+
+    selectGame(gameId);
+  });
+}
+
+//-------------Back to Dashboard---------------
+
+function wireBackToDashboard() {
+  document
+    .getElementById("back-to-dashboard")
+    .addEventListener("click", () => {
+      showDasboard(currentUser.username);
+    });
+}
+
+//-----------------------------------------------
 
 loadCurrentUser();
