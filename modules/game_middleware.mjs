@@ -1,7 +1,5 @@
 export function loadGame(games) {
-    
     return function (req, res, next) {
-        
         const gameId = Number(req.params.id);
         const game = games.find(g => g.id === gameId);
         
@@ -10,13 +8,11 @@ export function loadGame(games) {
         }
         
         req.game = game;
-
         next();
     }; 
 }
 
 export function requirePlayer(req, res, next) {
-     
     const isPlayer = req.game.players.some(
         p => p.userId === req.user.id
     );
