@@ -79,6 +79,12 @@ router.post("/:id/players", requireAuth, (req, res) => {
     return res.status(409).json({ error: "Player already in game" });
   }
 
+  if (game.status !== "waiting") {
+    return res.status(409).json({
+      error: "Cannot add players after game has started"
+    });
+  }
+
   game.players.push({
     userId: null,
     username,
@@ -97,6 +103,12 @@ router.post("/:id/scores",requireAuth,validateRoundScores,(req, res) => {
   
   if (!game) {
     return res.status(404).json({ error: "Game not found" });
+  }
+
+  if (game.status === "finished") {
+    return res.status(409).json({
+      error: "Game is finished"
+    });
   }
 
   for (const { username, score } of scores) {
@@ -122,6 +134,12 @@ router.post("/:id/finish", requireAuth, (req, res) => {
 
   if (game.ownerId !== req.user.id) {
     return res.status(403).json({ error: "Only owner can finish game" });
+  }
+
+  if (game.status === "finished") {
+    return res.status(409).json({
+      error: "Game already finished"
+    });
   }
 
   game.status = "finished";
