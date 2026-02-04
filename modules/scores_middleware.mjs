@@ -23,4 +23,5 @@ export function validateRoundScores(req, res, next) {
   }
 
   next();
+  
 }
