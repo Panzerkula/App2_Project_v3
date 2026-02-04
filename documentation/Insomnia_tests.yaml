@@ -312,19 +312,23 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/auth/games/:id"
-        name: Trying to hack specific games
+      - url: "{{ _.base_url }}/games/1/finish"
+        name: Finished Game
         meta:
-          id: req_efeb75623efa4b00927cea15f513f926
-          created: 1770158183655
-          modified: 1770159071832
+          id: req_15e5785eed574b2a9b787da0e7875caa
+          created: 1770168963972
+          modified: 1770170024047
           isPrivate: false
           description: ""
           sortKey: -1769548263515
-        method: GET
+        method: POST
         body:
           mimeType: application/json
-          text: ""
+          text: |-
+            {
+            	"username": "panzerkula",
+            	"scores": [5]
+            }
         headers:
           - name: Content-Type
             value: application/json
@@ -340,19 +344,16 @@ collection:
             send: true
             store: true
           rebuildPath: true
-        pathParameters:
-          - name: id
-            value: ""
 cookieJar:
   name: Default Jar
   meta:
     id: jar_4ebbca9a93253eef9bbfecbb0bce626a318ced0b
     created: 1769712326188
-    modified: 1770157928318
+    modified: 1770169836462
   cookies:
-    - id: c7bff982-86db-44bb-a582-cd932162f1ff
+    - id: 158f6dab-3ade-4476-b3e8-d1ce346ccad4
       key: connect.sid
-      value: s%3AdBPs3Ky_xBqqCkoHI8xb-zFZ8NRzUwbG.j2sTpGD1%2F0KAx7POxouu2FG177WEUPX5c7BpTqkW08g
+      value: s%3AQ5e8v3Uo3-kBS9vsIzZxNLTfWVZAV_FL.5RzOSZj5cVT%2B2J7SmE5K0nVwHqrDzD8zIh1460Tb2hA
       domain: localhost
       path: /
       secure: false
