@@ -106,7 +106,7 @@ function gameDetailHTML(game) {
   return `
     <h1>Mexican Train Score Tracker</h1>
     <section id="detailView-section">
-      <h2>Game #${game.id}</h2>
+      ${game.status !== "finished" ? `<h2>Game #${game.id}</h2>` : ""}
       <p>Status: ${game.status}</p>
 
       <h3>Players</h3>
@@ -115,9 +115,10 @@ function gameDetailHTML(game) {
         `<li>${p.username}</li>`).join("")}
       </ul>
 
-      <h3>Add Player</h3>
-      <input id="new-player-name" type="text" placeholder="Username" />
-      <button id="add-player-btn">Add Player</button>
+      ${game.status !== "finished" ? `
+        <h3>Add Player</h3>
+        <input id="new-player-name" type="text" placeholder="Username" />
+        <button id="add-player-btn">Add Player</button> ` : ""}
 
       <h3>Scores</h3>
       <table border="0.1">
@@ -140,6 +141,7 @@ function gameDetailHTML(game) {
         </tbody>
       </table>
 
+      ${game.status !== "finished" ? `
       <h3>Add Round</h3>
       <div id="score-inputs">
         ${game.players.map(p =>
@@ -147,8 +149,9 @@ function gameDetailHTML(game) {
         `).join("")}
       </div>
       <button id="add-round-btn">Add Round</button>
+      ` : ""}
       <button id="back-to-dashboard">Home</button>
-      <button id="finish-game-btn">Finish Game</button>
+      ${game.status !== "finished" ? ` <button id="finish-game-btn">Finish Game</button> ` : ""}
   `;
 }
 
@@ -188,9 +191,13 @@ function showGameDetail(game) {
   app.innerHTML = gameDetailHTML(game);
 
   wireBackToDashboard();
-  wireAddPlayer(game.id);
-  wireAddRound(game.id);
-  wireFinishGame(game.id);
+  if (game.status !== "finished") { 
+    wireAddPlayer(game.id); 
+  }
+  
+  if (game.status !== "finished") { 
+    wireAddRound(game.id); wireFinishGame(game.id); 
+  }
 }
 
 // ----------------Check me----------------
