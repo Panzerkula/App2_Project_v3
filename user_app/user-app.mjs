@@ -1,6 +1,10 @@
 const app = document.getElementById("app");
 let currentUser = null;
 
+function totalScore(player) {
+  return player.scores.reduce((sum, s) => sum + s, 0);
+}
+
 // --------------innerHTML----------------
 
 function signInHTML() {
@@ -121,16 +125,18 @@ function gameDetailHTML(game) {
           <tr>
             <th>Player</th>
             ${game.players[0]?.scores.map((_, i) =>
-            `<th>Round ${i + 1}</th>`).join("")}
+              `<th>Round ${i + 1}</th>`).join("")}
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${game.players.map(p => `
+            <tr>
+            <td>${p.username}</td>
+            ${p.scores.map(s => `<td>${s}</td>`).join("")}
+            <td><strong>${totalScore(p)}</strong></td>
           </tr>
-        </thead>
-        <tbody>
-          ${game.players.map(p => `
-          <tr>
-            <td>${p.username}
-            </td>${p.scores.map(s => `
-          <td>${s}</td>`).join("")}
-          </tr>`).join("")}
+          `).join("")}
         </tbody>
       </table>
 
@@ -142,6 +148,7 @@ function gameDetailHTML(game) {
       </div>
       <button id="add-round-btn">Add Round</button>
       <button id="back-to-dashboard">Home</button>
+      <button id="finish-game-btn">Finish Game</button>
   `;
 }
 
@@ -183,6 +190,7 @@ function showGameDetail(game) {
   wireBackToDashboard();
   wireAddPlayer(game.id);
   wireAddRound(game.id);
+  wireFinishGame(game.id);
 }
 
 // ----------------Check me----------------
@@ -522,6 +530,30 @@ function wireAddRound(gameId) {
     }
 
     selectGame(gameId);
+  });
+}
+
+//---------------Finish Game-------------------
+
+function wireFinishGame(gameId) {
+  const btn = document.getElementById("finish-game-btn");
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    const confirmed = confirm("Finish and save this game?");
+    if (!confirmed) return;
+
+    const res = await fetch(`/games/${gameId}/finish`, {
+      method: "POST",
+      credentials: "same-origin"
+    });
+
+    if (!res.ok) {
+      alert("Failed to finish game");
+      return;
+    }
+
+    showDasboard(currentUser.username);
   });
 }
 

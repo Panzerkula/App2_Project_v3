@@ -325,3 +325,9 @@ button:hover {
   margin: 10px auto;
   display: block;
 }
+
+#detailView-section td:last-child,
+#detailView-section th:last-child {
+  background: #eef6ff;
+  font-weight: bold;
+}

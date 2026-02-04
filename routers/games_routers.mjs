@@ -114,4 +114,18 @@ router.post("/:id/scores",requireAuth,validateRoundScores,(req, res) => {
   res.json(game);
 });
 
+//-------------------Finish game---------------------
+
+router.post("/:id/finish", requireAuth, (req, res) => {
+  const game = games.find(g => g.id === Number(req.params.id));
+  if (!game) return res.status(404).json({ error: "Game not found" });
+
+  if (game.ownerId !== req.user.id) {
+    return res.status(403).json({ error: "Only owner can finish game" });
+  }
+
+  game.status = "finished";
+  res.json(game);
+});
+
 export default router;
