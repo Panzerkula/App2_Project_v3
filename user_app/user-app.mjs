@@ -101,7 +101,7 @@ function editAccountHTML() {
 function gameDetailHTML(game) {
   return `
     <h1>Mexican Train Score Tracker</h1>
-    <section id="detailView-section"
+    <section id="detailView-section">
       <h2>Game #${game.id}</h2>
       <p>Status: ${game.status}</p>
 

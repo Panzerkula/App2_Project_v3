@@ -15,7 +15,7 @@ body {
 -------------------- */
 
 main {
-  max-width: 500px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -213,21 +213,115 @@ button:hover {
   background: #f0f0f0;
 }
 
-/* Game Detail Table */
+/* --------------------
+   Game Detail – Wide Layout
+-------------------- */
 
-#game-detail-section table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px; 
+#detailView-section {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 20px;
 }
 
-#game-detail-section th,
-#game-detail-section td {
-  border: 1px solid #ccc;
-  padding: 6px 8px;
-  text-align: center; }
+/* Center content but allow wide table */
 
-#game-detail-section th {
-  background: #f7f7f7;
+#detailView-section h2,
+#detailView-section h3 {
+  margin-bottom: 10px;
+}
+
+#detailView-section p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+#detailView-section ul {
+  padding-left: 0;
+  margin-bottom: 20px;
+}
+
+/* --------------------
+   Scores Table (13 rounds)
+-------------------- */
+
+#detailView-section table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto 20px;
+  background: #fff;
+}
+
+#detailView-section th,
+#detailView-section td {
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  font-size: 13px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#detailView-section {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 20px;
+  text-align: left;
+}
+
+/* Player name column stays visible */
+
+#detailView-section td:first-child,
+#detailView-section th:first-child {
+  position: sticky;
+  left: 0;
+  background: #f9f9f9;
   font-weight: bold;
+  z-index: 1;
+}
+
+/* Players list */
+#players-list {
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+
+/* Add player */
+
+#new-player-name,
+#add-player-btn {
+  max-width: 400px;
+  margin: 0 auto 10px;
+  display: block;
+}
+
+#detailView-section table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background: #fff;
+}
+
+#score-inputs {
+  max-width: 500px;
+  margin: 0 auto 15px;
+}
+
+#score-inputs > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+#score-inputs label,
+#score-inputs span {
+  text-align: left;
+}
+
+#add-round-btn,
+#back-to-dashboard {
+  max-width: 300px;
+  margin: 10px auto;
+  display: block;
 }
