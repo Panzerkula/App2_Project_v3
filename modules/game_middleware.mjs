@@ -38,7 +38,7 @@ export function forbidIfFinished(req, res, next) {
 }
 
 export function requireGameOwner(req, res, next) {
-
+    
     if (req.game.ownerId !== req.user.id) {
         return res.status(403).json({ error: "Only owner can perform this action" });
     }
