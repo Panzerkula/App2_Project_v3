@@ -106,7 +106,7 @@ function gameDetailHTML(game) {
   return `
     <h1>Mexican Train Score Tracker</h1>
     <section id="detailView-section">
-      ${game.status !== "finished" ? `<h2>Game #${game.id}</h2>` : ""}
+      ${game.status !== "finished" ? `<h2>${game.name}</h2>` : ""}
       <p>Status: ${game.status}</p>
 
       <h3>Players</h3>
@@ -170,7 +170,7 @@ function showSignIn() {
   wireCreateAccountLink();
 }
 
-function showDasboard(username) {
+function showDashBoard(username) {
   app.innerHTML = loggedInHTML(username);
 
   wireLogout();
@@ -194,7 +194,7 @@ function showGameDetail(game) {
   if (game.status !== "finished") { 
     wireAddPlayer(game.id); 
   }
-  
+
   if (game.status !== "finished") { 
     wireAddRound(game.id); wireFinishGame(game.id); 
   }
@@ -214,7 +214,7 @@ async function loadCurrentUser() {
 
   const user = await res.json();
   currentUser = user;
-  showDasboard(user.username);
+  showDashBoard(user.username);
 }
 
 // ----------------Signup----------------
@@ -377,7 +377,7 @@ function wireReturnFromEdit() {
   const returnBtn = document.getElementById("return-to-loggedIn");
 
   returnBtn.addEventListener("click", () => {
-    showDasboard(currentUser.username);
+    showDashBoard(currentUser.username);
   });
 }
 
@@ -419,9 +419,14 @@ function wireCreateGame() {
   const btn = document.getElementById("create-game-btn");
 
   btn.addEventListener("click", async () => {
+    const name = prompt("Name your game:");
+    
+    if (!name) return;
     const res = await fetch("/games", {
       method: "POST",
-      credentials: "same-origin"
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ name })
     });
 
     if (!res.ok) {
@@ -459,7 +464,7 @@ async function loadGames() {
 
   for (const game of games) {
     const li = document.createElement("li");
-    li.textContent = `Game #${game.id} (${game.status})`;
+    li.textContent = `${game.name} (${game.status})`;
 
     li.addEventListener("click", () => {
       selectGame(game.id);
@@ -560,7 +565,7 @@ function wireFinishGame(gameId) {
       return;
     }
 
-    showDasboard(currentUser.username);
+    showDashBoard(currentUser.username);
   });
 }
 
@@ -570,7 +575,7 @@ function wireBackToDashboard() {
   document
     .getElementById("back-to-dashboard")
     .addEventListener("click", () => {
-      showDasboard(currentUser.username);
+      showDashBoard(currentUser.username);
     });
 }
 

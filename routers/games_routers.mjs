@@ -11,10 +11,12 @@ let nextGameId = 1;
 
 router.post("/", requireAuth, (req, res) => {
   const user = req.user;
+  const { name } = req.body;
 
   const newGame = {
     id: nextGameId++,
     ownerId: user.id,
+    name: name || "Untitled Game",
     players: [
       {
         userId: user.id,
