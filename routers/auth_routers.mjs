@@ -9,12 +9,16 @@ let nextUserId = 1;
 //---------------Signup Router------------------------------
 
 router.post("/signup", (req, res) => {
+
   const {
     username,
     password,
     mail,
     acceptTos,
   } = req.body;
+
+  const existingUser = users.find(u => u.username === username);
+  const existingMail = users.find(u => u.mail === mail);
 
   if (!username || !password) {
     return res.status(400).json({
@@ -28,13 +32,17 @@ router.post("/signup", (req, res) => {
     });
   }
 
+  if (existingMail) {
+    return res.status(409).json({
+      error: "Email already in use"
+    });
+  }
+
   if (acceptTos !== true) {
     return res.status(400).json({
       error: "You must accept the Terms of Service"
     });
   }
-
-  const existingUser = users.find(u => u.username === username);
 
   if (existingUser) {
     return res.status(409).json({
@@ -64,8 +72,8 @@ router.post("/signup", (req, res) => {
 //---------------Delete Router---------------------------------
 
 router.delete("/me", requireAuth, (req, res) => {
+  
   const userId = req.session.user.id;
-
   const index = users.findIndex(u => u.id === userId);
 
   if (index === -1) {
@@ -82,9 +90,9 @@ router.delete("/me", requireAuth, (req, res) => {
 //---------------Edit user Router------------------------------
 
 router.put("/me", requireAuth, (req, res) => {
+  
   const userId = req.session.user.id;
   const { username, password } = req.body;
-
   const user = users.find(u => u.id === userId);
 
   if (!user) {
@@ -114,8 +122,8 @@ router.put("/me", requireAuth, (req, res) => {
 //---------------Login Router----------------------------------
 
 router.post("/login", (req, res) => {
+  
   const { username, password } = req.body;
-
   const user = users.find(
     u => u.username === username && u.password === password
   );
@@ -148,6 +156,7 @@ router.get("/me", requireAuth, (req, res) => {
 //---------------List users router-----------------------------------
 
 router.get("/users", requireAuth, (req, res) => {
+  
   const safeUsers = users.map(u => ({
     id: u.id,
     username: u.username,
