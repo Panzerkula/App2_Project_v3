@@ -6,8 +6,8 @@ body {
   margin: 0;
   padding: 40px;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #f2f2f2;
-  color: #222;
+  background-color: #141414; /* deeper dark grey */
+  color: #e5e5e5;
 }
 
 /* --------------------
@@ -26,12 +26,14 @@ main {
 h1 {
   text-align: center;
   margin-bottom: 30px;
+  color: #b30000; /* deep crimson */
 }
 
 h2 {
   margin-top: 0;
   margin-bottom: 15px;
   font-size: 20px;
+  color: #b30000;
 }
 
 /* --------------------
@@ -39,16 +41,17 @@ h2 {
 -------------------- */
 
 section {
-  background: #ffffff;
-  border: 1px solid #ddd;
+  background: #1d1d1d;
   border-radius: 6px;
   padding: 20px;
   margin-bottom: 25px;
+  box-shadow: 0 0 8px rgba(179, 0, 0, 0.25); /* subtle red glow */
 }
 
 /* --------------------
    Forms
 -------------------- */
+
 input[type="text"],
 input[type="password"],
 input[type="email"],
@@ -57,25 +60,19 @@ input[type="number"] {
   padding: 8px 10px;
   margin-bottom: 12px;
   font-size: 14px;
-  font-family: Arial, Helvetica, sans-serif;
 
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 4px;
 
-  background-color: #fff;
-  color: #222;
+  background-color: #121212;
+  color: #e5e5e5;
 
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-form {
-  display: block;
+  box-shadow: 0 0 6px rgba(179, 0, 0, 0.25);
 }
 
 input:focus {
   outline: none;
-  border-color: #0077cc;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
 }
 
 /* --------------------
@@ -93,42 +90,51 @@ label {
 -------------------- */
 
 button {
-  padding: 8px 14px;
+  width: 180px;                     /* consistent button width */
+  padding: 10px 0;                  /* consistent height */
   font-size: 14px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  background-color: #0077cc;
-  color: white;
-}
 
-form button {
-  margin-bottom: 10px;
+  display: block;
+  margin: 10px auto;                /* spacing + centered */
+
+  background-color: #b30000;
+  color: white;
+
+  box-shadow: 0 0 8px rgba(179, 0, 0, 0.4);
 }
 
 button:hover {
-  background-color: #005fa3;
+  background-color: #8a0000;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
 }
 
 /* Logout */
 
 #logout-btn {
-  background-color: #666;
+  background-color: #444;
+  box-shadow: 0 0 6px rgba(179, 0, 0, 0.25);
+  display: block;
+  margin: 0 auto;
 }
 
 #logout-btn:hover {
-  background-color: #555;
+  background-color: #333;
 }
 
 /* Delete account */
 
 #delete-account-btn {
-  background-color: #c62828;
+  background-color: #7a0000;
   margin-left: 8px;
+  display: block;
+  margin: 0 auto;
 }
 
 #delete-account-btn:hover {
-  background-color: #a61d1d;
+  background-color: #5c0000;
 }
 
 /* --------------------
@@ -151,6 +157,7 @@ button:hover {
   margin-top: 20px;
   font-size: 13px;
   white-space: pre-wrap;
+  color: #ccc;
 }
 
 /* -------- Modal -------- */
@@ -161,7 +168,7 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -173,14 +180,15 @@ button:hover {
 }
 
 .modal-content {
-  background: #fff;
+  background: #1d1d1d;
   width: 80%;
   max-width: 700px;
   max-height: 80%;
   overflow-y: auto;
   padding: 20px;
   border-radius: 6px;
-  position: relative;
+
+  box-shadow: 0 0 12px rgba(179, 0, 0, 0.4);
 }
 
 #close-tos {
@@ -191,6 +199,7 @@ button:hover {
   border: none;
   font-size: 22px;
   cursor: pointer;
+  color: #b30000;
 }
 
 /* --------------------
@@ -204,13 +213,16 @@ button:hover {
 
 #games-list li {
   padding: 8px;
-  border: 1px solid #ccc;
   margin-bottom: 6px;
   cursor: pointer;
+
+  background: #121212;
+  box-shadow: 0 0 6px rgba(179, 0, 0, 0.25);
 }
 
 #games-list li:hover {
-  background: #f0f0f0;
+  background: #1a1a1a;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
 }
 
 /* --------------------
@@ -221,27 +233,22 @@ button:hover {
   max-width: 100%;
   overflow-x: auto;
   padding: 20px;
+  text-align: left;
 }
-
-/* Center content but allow wide table */
 
 #detailView-section h2,
 #detailView-section h3 {
   margin-bottom: 10px;
+  color: #b30000;
 }
 
 #detailView-section p {
   margin-bottom: 20px;
-  color: #555;
-}
-
-#detailView-section ul {
-  padding-left: 0;
-  margin-bottom: 20px;
+  color: #ccc;
 }
 
 /* --------------------
-   Scores Table (13 rounds)
+   Scores Table
 -------------------- */
 
 #detailView-section table {
@@ -249,85 +256,62 @@ button:hover {
   min-width: 100%;
   border-collapse: collapse;
   margin: 0 auto 20px;
-  background: #fff;
+  background: #121212;
+
+  box-shadow: 0 0 10px rgba(179, 0, 0, 0.35);
 }
 
 #detailView-section th,
 #detailView-section td {
-  border: 1px solid #ccc;
   padding: 6px 10px;
   font-size: 13px;
   text-align: center;
   white-space: nowrap;
+  color: #e5e5e5;
 }
-
-#detailView-section {
-  max-width: 100%;
-  overflow-x: auto;
-  padding: 20px;
-  text-align: left;
-}
-
-/* Player name column stays visible */
 
 #detailView-section td:first-child,
 #detailView-section th:first-child {
   position: sticky;
   left: 0;
-  background: #f9f9f9;
+  background: #1d1d1d;
   font-weight: bold;
   z-index: 1;
+  box-shadow: 4px 0 8px rgba(179, 0, 0, 0.3);
 }
 
-/* Players list */
-#players-list {
-  max-width: 700px;
-  margin: 0 auto 20px;
-}
-
-/* Add player */
-
-#new-player-name,
-#add-player-btn {
-  max-width: 400px;
-  margin: 0 auto 10px;
-  display: block;
-}
-
-#detailView-section table {
-  width: 100%;
-  min-width: 900px;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  background: #fff;
-}
-
-#score-inputs {
-  max-width: 500px;
-  margin: 0 auto 15px;
-}
-
-#score-inputs > div {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-#score-inputs label,
-#score-inputs span {
-  text-align: left;
-}
-
-#add-round-btn,
-#back-to-dashboard {
-  max-width: 300px;
-  margin: 10px auto;
-  display: block;
-}
-
+/* Total column highlight */
 #detailView-section td:last-child,
 #detailView-section th:last-child {
-  background: #eef6ff;
+  background: #2a0000;
   font-weight: bold;
+  box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.4);
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #e5e5e5 !important;
+  transition: background-color 9999s ease-in-out 0s;
+  box-shadow: 0 0 6px rgba(179, 0, 0, 0.25) !important;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #121212 inset !important;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, label, li, td, th, button, input {
+  text-align: center;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-shadow: 
+    0 0 4px rgba(179, 0, 0, 0.45),
+    0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+#profile-pic {
+  display: block;
+  margin: 0 auto;
+}
+

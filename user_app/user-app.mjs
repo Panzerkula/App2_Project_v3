@@ -69,11 +69,14 @@ function loggedInHTML(user) {
       <h2>Welcome, <span id="username">${user.username}</span></h2>
 
       <img
+        id="profile-pic"
         src="${user.profilePic}"
         alt="Profile picture"
         style="width:120px; height:120px; border-radius:50%; object-fit:cover;"
-        onerror="this.src='/assets/no_pic.png'"
-      >
+        onerror="this.src='/assets/no_pic.png'">
+
+      <br>
+      <br>
       
       <button id="create-game-btn">+ New Game</button>
       <button id="user-view-btn">Account</button>
@@ -94,6 +97,7 @@ function userViewHTML(user) {
 
     <section id="user-section">
       <img
+        id="profile-pic"
         src="${user.profilePic}"
         alt="Profile picture"
         style="width:120px;height:120px;border-radius:50%;object-fit:cover;"
@@ -139,10 +143,8 @@ function gameDetailHTML(game) {
       <p>Status: ${game.status}</p>
 
       <h3>Players</h3>
-      <ul id="players-list">
         ${game.players.map(p =>
-        `<li>${p.username}</li>`).join("")}
-      </ul>
+        `<p>${p.username}</p>`).join("")}
 
       ${game.status !== "finished" ? `
         <h3>Add Player</h3>
