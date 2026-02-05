@@ -15,10 +15,12 @@ router.post("/signup", (req, res) => {
     password,
     mail,
     acceptTos,
+    profilePic
   } = req.body;
 
   const existingUser = users.find(u => u.username === username);
   const existingMail = users.find(u => u.mail === mail);
+  const profilePicPath = profilePic ?? "assets/no_pic.png"
 
   if (!username || !password) {
     return res.status(400).json({
@@ -59,13 +61,13 @@ router.post("/signup", (req, res) => {
     username,
     password,
     mail,
+    profilePic: profilePicPath,
     consent: {
       tosAcceptedAt: new Date().toISOString(),
     }
   };
 
   users.push(newUser);
-
   res.status(201).json({ success: true });
 });
 
@@ -161,6 +163,7 @@ router.get("/users", requireAuth, (req, res) => {
     id: u.id,
     username: u.username,
     mail: u.mail,
+    profilePic: u.profilePic,
     createdAt: u.consent?.tosAcceptedAt
   }));
 
