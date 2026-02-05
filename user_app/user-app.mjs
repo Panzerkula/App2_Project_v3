@@ -76,13 +76,35 @@ function loggedInHTML(user) {
       >
       
       <button id="create-game-btn">+ New Game</button>
+      <button id="user-view-btn">Account</button>
 
       <h3>Your Games</h3>
       <ul id="games-list"></ul>
 
       <button id="logout-btn">Logout</button>
-      <button id="delete-account-btn">Delete Account</button>
-      <button id="edit-account-btn">Edit Account</button>
+    </section>
+
+    <pre id="output"></pre>
+  `;
+}
+
+function userViewHTML(user) {
+  return `
+    <h1>Your Account</h1>
+
+    <section id="user-section">
+      <img
+        src="${user.profilePic}"
+        alt="Profile picture"
+        style="width:120px;height:120px;border-radius:50%;object-fit:cover;"
+      >
+
+      <p><strong>Username:</strong> ${user.username}</p>
+      <p><strong>Email:</strong> ${user.mail}</p>
+
+      <button id="edit-user-btn">Edit account</button>
+      <button id="delete-user-btn">Delete account</button>
+      <button id="back-to-dashboard-btn">Home</button>
     </section>
 
     <pre id="output"></pre>
@@ -157,7 +179,7 @@ function gameDetailHTML(game) {
       </div>
       <button id="add-round-btn">Add Round</button>
       ` : ""}
-      <button id="back-to-dashboard">Home</button>
+      <button id="back-to-dashboard-btn">Home</button>
       ${game.status !== "finished" ? ` <button id="finish-game-btn">Finish Game</button> ` : ""}
   `;
 }
@@ -180,10 +202,16 @@ function showSignIn() {
 function showDashBoard() {
   app.innerHTML = loggedInHTML(currentUser);
   wireLogout();
-  wireDeleteAccount();
-  wireEditAccount();
   wireCreateGame();
+  wireUserView();
   loadGames();
+}
+
+function showUserView() {
+  app.innerHTML = userViewHTML(currentUser);
+  wireEditAccount();
+  wireDeleteAccount();
+  wireBackToDashboard();
 }
 
 function showEditUser(user) {
@@ -315,12 +343,20 @@ function wireLogout() {
   });
 }
 
+// ---------------User view---------------
+
+function wireUserView() {
+  document.getElementById("user-view-btn").addEventListener("click", showUserView);
+}
+
 // -------------Delete Account-------------
 
 function wireDeleteAccount() {
-  const deleteAccountBtn = document.getElementById("delete-account-btn");
 
-  deleteAccountBtn.addEventListener("click", async () => {
+  const btn = document.getElementById("delete-user-btn");
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
     const confirmed = confirm(
       "Are you sure you want to delete your account?"
     );
@@ -341,9 +377,10 @@ function wireDeleteAccount() {
 // --------------Edit account---------------
 
 function wireEditAccount() {
-  const editAccountBtn = document.getElementById("edit-account-btn");
+  const btn = document.getElementById("edit-user-btn");
+  if (!btn) return;
 
-  editAccountBtn.addEventListener("click", () => {
+  btn.addEventListener("click", () => {
     showEditUser(currentUser);
   });
 }
@@ -575,9 +612,12 @@ function wireFinishGame(gameId) {
 //-------------Back to Dashboard---------------
 
 function wireBackToDashboard() {
-  document.getElementById("back-to-dashboard").addEventListener("click", () => {
+  const btn = document.getElementById("back-to-dashboard-btn");
+  
+  if (!btn) return;
+  btn.addEventListener("click", async () => {
     showDashBoard();
-  });
+  })
 }
 
 //-----------------------------------------------
