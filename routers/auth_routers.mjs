@@ -20,7 +20,7 @@ router.post("/signup", (req, res) => {
 
   const existingUser = users.find(u => u.username === username);
   const existingMail = users.find(u => u.mail === mail);
-  const profilePicPath = profilePic ?? "assets/no_pic.png"
+  const profilePicPath = profilePic ?? "/assets/no_pic.png"
 
   if (!username || !password) {
     return res.status(400).json({
@@ -152,7 +152,20 @@ router.post("/logout", (req, res) => {
 //-------------Current session router-----------------------------------
 
 router.get("/me", requireAuth, (req, res) => {
-  res.json(req.user);
+  const userId = req.session.user.id;
+  const user = users.find(u => u.id === userId);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json({
+    id: user.id,
+    username: user.username,
+    mail: user.mail,
+    profilePic: user.profilePic,
+    createdAt: user.consent?.tosAcceptedAt
+  });
 });
 
 //---------------List users router-----------------------------------

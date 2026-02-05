@@ -61,13 +61,20 @@ function signUpHTML() {
   `;
 }
 
-function loggedInHTML(username) {
+function loggedInHTML(user) {
   return `
     <h1>Mexican Train Score Tracker</h1>
 
     <section id="dashboard-section">
-      <h2>Welcome, <span id="username">${username}</span></h2>
+      <h2>Welcome, <span id="username">${user.username}</span></h2>
 
+      <img
+        src="${user.profilePic}"
+        alt="Profile picture"
+        style="width:120px; height:120px; border-radius:50%; object-fit:cover;"
+        onerror="this.src='/assets/no_pic.png'"
+      >
+      
       <button id="create-game-btn">+ New Game</button>
 
       <h3>Your Games</h3>
@@ -170,8 +177,8 @@ function showSignIn() {
   wireCreateAccountLink();
 }
 
-function showDashBoard(username) {
-  app.innerHTML = loggedInHTML(username);
+function showDashBoard() {
+  app.innerHTML = loggedInHTML(currentUser);
   wireLogout();
   wireDeleteAccount();
   wireEditAccount();
@@ -210,7 +217,7 @@ async function loadCurrentUser() {
 
   const user = await res.json();
   currentUser = user;
-  showDashBoard(user.username);
+  showDashBoard();
 }
 
 // ----------------Signup----------------
@@ -373,7 +380,7 @@ function wireReturnFromEdit() {
   const returnBtn = document.getElementById("return-to-loggedIn");
 
   returnBtn.addEventListener("click", () => {
-    showDashBoard(currentUser.username);
+    showDashBoard();
   });
 }
 
@@ -561,18 +568,16 @@ function wireFinishGame(gameId) {
       return;
     }
 
-    showDashBoard(currentUser.username);
+    showDashBoard();
   });
 }
 
 //-------------Back to Dashboard---------------
 
 function wireBackToDashboard() {
-  document
-    .getElementById("back-to-dashboard")
-    .addEventListener("click", () => {
-      showDashBoard(currentUser.username);
-    });
+  document.getElementById("back-to-dashboard").addEventListener("click", () => {
+    showDashBoard();
+  });
 }
 
 //-----------------------------------------------
