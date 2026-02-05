@@ -172,12 +172,10 @@ function showSignIn() {
 
 function showDashBoard(username) {
   app.innerHTML = loggedInHTML(username);
-
   wireLogout();
   wireDeleteAccount();
   wireEditAccount();
   wireCreateGame();
-
   loadGames();
 }
 
@@ -189,7 +187,6 @@ function showEditUser(user) {
 
 function showGameDetail(game) {
   app.innerHTML = gameDetailHTML(game);
-
   wireBackToDashboard();
   if (game.status !== "finished") { 
     wireAddPlayer(game.id); 
