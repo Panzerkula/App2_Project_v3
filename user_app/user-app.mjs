@@ -193,11 +193,10 @@ function showGameDetail(game) {
   wireBackToDashboard();
   if (game.status !== "finished") { 
     wireAddPlayer(game.id); 
+    wireAddRound(game.id);
+    wireFinishGame(game.id);
   }
 
-  if (game.status !== "finished") { 
-    wireAddRound(game.id); wireFinishGame(game.id); 
-  }
 }
 
 // ----------------Check me----------------
