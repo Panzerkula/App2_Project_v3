@@ -20,7 +20,7 @@ collection:
         meta:
           id: req_f520fa5765b94edea77d2954f922dca4
           created: 1769546800072
-          modified: 1770157902582
+          modified: 1770341509284
           isPrivate: false
           description: ""
           sortKey: -1769548212628
@@ -143,7 +143,7 @@ collection:
         meta:
           id: req_9c2a17cff2254cfb9b84d6821a195b1d
           created: 1769729442851
-          modified: 1769888491277
+          modified: 1770341256844
           isPrivate: false
           description: ""
           sortKey: -1769548212353
@@ -152,8 +152,8 @@ collection:
           mimeType: application/json
           text: |-
             {
-              "username": "panzerkulaa",
-              "password": "1234"
+              "username": "panzerkula",
+              "password": "12345"
             }
         headers:
           - name: Content-Type
@@ -226,7 +226,7 @@ collection:
         meta:
           id: req_38f2cbd93a1b47b0ac20a865211e61e4
           created: 1770034280439
-          modified: 1770122836935
+          modified: 1770341519354
           isPrivate: false
           description: ""
           sortKey: -1770034280439
@@ -235,8 +235,7 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"username": "NewName",
-            	"password": "NewPassword"
+            	"password": "321"
             }
         headers:
           - name: Content-Type
@@ -349,11 +348,11 @@ cookieJar:
   meta:
     id: jar_4ebbca9a93253eef9bbfecbb0bce626a318ced0b
     created: 1769712326188
-    modified: 1770169836462
+    modified: 1770341205333
   cookies:
-    - id: 158f6dab-3ade-4476-b3e8-d1ce346ccad4
+    - id: e9b602a1-45fc-42fe-be8b-0b2bb55829e2
       key: connect.sid
-      value: s%3AQ5e8v3Uo3-kBS9vsIzZxNLTfWVZAV_FL.5RzOSZj5cVT%2B2J7SmE5K0nVwHqrDzD8zIh1460Tb2hA
+      value: s%3AlUXe8GnraqWGClF0XZ7rR1lTPTRNoBUN.qQbld4kfT8ok32oi5Jld0fbJ6WUgZoGpb4iwrbse6%2B8
       domain: localhost
       path: /
       secure: false

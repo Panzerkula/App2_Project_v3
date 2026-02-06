@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../modules/auth_middleware.mjs";
+import { hashPassword, verifyPassword } from "../modules/password.mjs"
 
 const router = express.Router();
 
@@ -9,61 +10,39 @@ let nextUserId = 1;
 //---------------Signup Router------------------------------
 
 router.post("/signup", (req, res) => {
-
-  const {
-    username,
-    password,
-    mail,
-    acceptTos,
-    profilePic
-  } = req.body;
-
-  const existingUser = users.find(u => u.username === username);
-  const existingMail = users.find(u => u.mail === mail);
-  const profilePicPath = profilePic ?? "/assets/no_pic.png"
+  const { username, password, mail, acceptTos, profilePic } = req.body;
 
   if (!username || !password) {
-    return res.status(400).json({
-      error: "Username and password required"
-    });
-  }
-
-  if (!mail) {
-    return res.status(400).json({
-      error: "Email required"
-    });
-  }
-
-  if (existingMail) {
-    return res.status(409).json({
-      error: "Email already in use"
-    });
-  }
-
-  if (acceptTos !== true) {
-    return res.status(400).json({
-      error: "You must accept the Terms of Service"
-    });
-  }
-
-  if (existingUser) {
-    return res.status(409).json({
-      error: "Username already taken"
-    });
+    return res.status(400).json({ error: "Username and password required" });
   }
 
   if (!mail || !mail.includes("@")) {
     return res.status(400).json({ error: "Invalid email address" });
   }
 
+  if (acceptTos !== true) {
+    return res.status(400).json({ error: "You must accept the Terms of Service" });
+  }
+
+  if (users.some(u => u.username === username)) {
+    return res.status(409).json({ error: "Username already taken" });
+  }
+
+  if (users.some(u => u.mail === mail)) {
+    return res.status(409).json({ error: "Email already in use" });
+  }
+
+  const { hash, salt } = hashPassword(password);
+
   const newUser = {
     id: nextUserId++,
     username,
-    password,
+    passwordHash: hash,
+    passwordSalt: salt,
     mail,
-    profilePic: profilePicPath,
+    profilePic: profilePic ?? "/assets/no_pic.png",
     consent: {
-      tosAcceptedAt: new Date().toISOString(),
+      tosAcceptedAt: new Date().toISOString()
     }
   };
 
@@ -71,66 +50,67 @@ router.post("/signup", (req, res) => {
   res.status(201).json({ success: true });
 });
 
-//---------------Delete Router---------------------------------
+//---------------Edit user Router------------------------------
+
+router.put("/me", requireAuth, (req, res) => {
+  const user = users.find(u => u.id === req.session.user.id);
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  const { username, password, profilePic } = req.body;
+
+  if (username) {
+    if (users.some(u => u.username === username && u.id !== user.id)) {
+      return res.status(409).json({ error: "Username already taken" });
+    }
+    user.username = username;
+    req.session.user.username = username;
+  }
+
+  if (password) {
+    const { hash, salt } = hashPassword(password);
+    user.passwordHash = hash;
+    user.passwordSalt = salt;
+  }
+
+  if (profilePic) {
+    user.profilePic = profilePic;
+  }
+
+  res.json({ success: true });
+});
+
+//------------Delete User Router--------------------------------
 
 router.delete("/me", requireAuth, (req, res) => {
-  
-  const userId = req.session.user.id;
-  const index = users.findIndex(u => u.id === userId);
+  const index = users.findIndex(u => u.id === req.session.user.id);
 
   if (index === -1) {
     return res.status(404).json({ error: "User not found" });
   }
 
   users.splice(index, 1);
-
-  req.session.destroy(() => {
-    res.json({ success: true });
-  });
-});
-
-//---------------Edit user Router------------------------------
-
-router.put("/me", requireAuth, (req, res) => {
-  
-  const userId = req.session.user.id;
-  const { username, password } = req.body;
-  const user = users.find(u => u.id === userId);
-
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
-  }
-
-  if (username) {
-    const usernameTaken = users.some(
-      u => u.username === username && u.id !== userId
-    );
-
-    if (usernameTaken) {
-      return res.status(409).json({ error: "Username already taken" });
-    }
-
-    user.username = username;
-    req.session.user.username = username;
-  }
-
-  if (password) {
-    user.password = password;
-  }
-
-  res.json({ success: true });
+  req.session.destroy(() => res.json({ success: true }));
 });
 
 //---------------Login Router----------------------------------
 
 router.post("/login", (req, res) => {
-  
   const { username, password } = req.body;
-  const user = users.find(
-    u => u.username === username && u.password === password
+
+  const user = users.find(u => u.username === username);
+  if (!user) {
+    return res.status(401).json({ error: "Invalid username or password" });
+  }
+
+  const valid = verifyPassword(
+    password,
+    user.passwordSalt,
+    user.passwordHash
   );
 
-  if (!user) {
+  if (!valid) {
     return res.status(401).json({ error: "Invalid username or password" });
   }
 
@@ -152,8 +132,7 @@ router.post("/logout", (req, res) => {
 //-------------Current session router-----------------------------------
 
 router.get("/me", requireAuth, (req, res) => {
-  const userId = req.session.user.id;
-  const user = users.find(u => u.id === userId);
+  const user = users.find(u => u.id === req.session.user.id);
 
   if (!user) {
     return res.status(404).json({ error: "User not found" });
@@ -171,16 +150,15 @@ router.get("/me", requireAuth, (req, res) => {
 //---------------List users router-----------------------------------
 
 router.get("/users", requireAuth, (req, res) => {
-  
-  const safeUsers = users.map(u => ({
-    id: u.id,
-    username: u.username,
-    mail: u.mail,
-    profilePic: u.profilePic,
-    createdAt: u.consent?.tosAcceptedAt
-  }));
-
-  res.json(safeUsers);
+  res.json(
+    users.map(u => ({
+      id: u.id,
+      username: u.username,
+      mail: u.mail,
+      profilePic: u.profilePic,
+      createdAt: u.consent?.tosAcceptedAt
+    }))
+  );
 });
 
 //------------------------------------------------------------
