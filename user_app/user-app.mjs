@@ -46,7 +46,7 @@ function signUpHTML() {
 
       <p>
         Already have an account?
-        <a href="#" id="back-to-signin-link">Back to sign in</a>
+        <a href="#" id="back-to-signin-link">Log in</a>
       </p>
     </section>
     <div id="tos-modal" class="modal hidden">
@@ -74,16 +74,13 @@ function loggedInHTML(user) {
         alt="Profile picture"
         style="width:120px; height:120px; border-radius:50%; object-fit:cover;"
         onerror="this.src='/assets/no_pic.png'">
-
-      <br>
-      <br>
       
       <button id="create-game-btn">+ New Game</button>
-      <button id="user-view-btn">Account</button>
 
       <h3>Your Games</h3>
       <ul id="games-list"></ul>
 
+      <button id="user-view-btn">Account</button>
       <button id="logout-btn">Logout</button>
     </section>
 
@@ -100,8 +97,7 @@ function userViewHTML(user) {
         id="profile-pic"
         src="${user.profilePic}"
         alt="Profile picture"
-        style="width:120px;height:120px;border-radius:50%;object-fit:cover;"
-      >
+        style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
 
       <p><strong>Username:</strong> ${user.username}</p>
       <p><strong>Email:</strong> ${user.mail}</p>
@@ -127,7 +123,7 @@ function editAccountHTML() {
         <input name="password" type="password" placeholder="New password (optional)" />
 
         <button type="submit">Confirm</button>
-        <button type="button" id="return-to-loggedIn">Return</button>
+        <button type="button" id="return-to-loggedIn">Home</button>
       </form>
     </section>
 
@@ -139,16 +135,13 @@ function gameDetailHTML(game) {
   return `
     <h1>Mexican Train Score Tracker</h1>
     <section id="detailView-section">
-      ${game.status !== "finished" ? `<h2>${game.name}</h2>` : ""}
-      <p>Status: ${game.status}</p>
-
-      <h3>Players</h3>
-        ${game.players.map(p =>
-        `<p>${p.username}</p>`).join("")}
 
       ${game.status !== "finished" ? `
+        <h3>Players</h3>
+        ${game.players.map(p =>
+        `<p>${p.username}</p>`).join("")}
         <h3>Add Player</h3>
-        <input id="new-player-name" type="text" placeholder="Username" />
+        <input id="new-player-name" type="text" placeholder="Player name" />
         <button id="add-player-btn">Add Player</button> ` : ""}
 
       <h3>Scores</h3>

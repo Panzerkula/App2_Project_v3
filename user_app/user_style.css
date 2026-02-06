@@ -6,8 +6,8 @@ body {
   margin: 0;
   padding: 40px;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #141414; /* deeper dark grey */
-  color: #e5e5e5;
+  background-color: #0f0f0f;
+  color: #ffffff;
 }
 
 /* --------------------
@@ -26,7 +26,7 @@ main {
 h1 {
   text-align: center;
   margin-bottom: 30px;
-  color: #b30000; /* deep crimson */
+  color: #b30000;
 }
 
 h2 {
@@ -45,7 +45,7 @@ section {
   border-radius: 6px;
   padding: 20px;
   margin-bottom: 25px;
-  box-shadow: 0 0 8px rgba(179, 0, 0, 0.25); /* subtle red glow */
+  box-shadow: 0 0 12px rgba(255, 0, 0, 0.45);
 }
 
 /* --------------------
@@ -57,6 +57,12 @@ input[type="password"],
 input[type="email"],
 input[type="number"] {
   width: 100%;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+
+  display:block;
+
   padding: 8px 10px;
   margin-bottom: 12px;
   font-size: 14px;
@@ -70,6 +76,7 @@ input[type="number"] {
   box-shadow: 0 0 6px rgba(179, 0, 0, 0.25);
 }
 
+
 input:focus {
   outline: none;
   box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
@@ -82,7 +89,8 @@ input:focus {
 label {
   display: block;
   font-size: 14px;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
+  text-align: center;
 }
 
 /* --------------------
@@ -90,15 +98,15 @@ label {
 -------------------- */
 
 button {
-  width: 180px;                     /* consistent button width */
-  padding: 10px 0;                  /* consistent height */
+  width: 180px;
+  padding: 10px 0;
   font-size: 14px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   display: block;
-  margin: 10px auto;                /* spacing + centered */
+  margin: 10px auto;
 
   background-color: #b30000;
   color: white;
@@ -107,34 +115,8 @@ button {
 }
 
 button:hover {
-  background-color: #8a0000;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
-}
-
-/* Logout */
-
-#logout-btn {
-  background-color: #444;
-  box-shadow: 0 0 6px rgba(179, 0, 0, 0.25);
-  display: block;
-  margin: 0 auto;
-}
-
-#logout-btn:hover {
-  background-color: #333;
-}
-
-/* Delete account */
-
-#delete-account-btn {
-  background-color: #7a0000;
-  margin-left: 8px;
-  display: block;
-  margin: 0 auto;
-}
-
-#delete-account-btn:hover {
-  background-color: #5c0000;
+  background-color: #f82424;
+  box-shadow: 0 0 10px rgba(255, 93, 93, 0.801);
 }
 
 /* --------------------
@@ -209,9 +191,14 @@ button:hover {
 #games-list {
   list-style: none;
   padding: 0;
+  max-width: 350;
 }
 
 #games-list li {
+  max-width: 350px;   /* your requested limit */
+  margin-left: auto;  /* keeps it centered */
+  margin-right: auto;
+
   padding: 8px;
   margin-bottom: 6px;
   cursor: pointer;
@@ -233,18 +220,22 @@ button:hover {
   max-width: 100%;
   overflow-x: auto;
   padding: 20px;
-  text-align: left;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 #detailView-section h2,
 #detailView-section h3 {
   margin-bottom: 10px;
   color: #b30000;
+  margin-bottom: 10px;
 }
 
 #detailView-section p {
   margin-bottom: 20px;
+  padding: 10px;
   color: #ccc;
+  text-align: center;
 }
 
 /* --------------------
@@ -257,6 +248,7 @@ button:hover {
   border-collapse: collapse;
   margin: 0 auto 20px;
   background: #121212;
+  text-align: center;
 
   box-shadow: 0 0 10px rgba(179, 0, 0, 0.35);
 }
@@ -278,6 +270,7 @@ button:hover {
   font-weight: bold;
   z-index: 1;
   box-shadow: 4px 0 8px rgba(179, 0, 0, 0.3);
+  text-align: center;
 }
 
 /* Total column highlight */
@@ -286,6 +279,7 @@ button:hover {
   background: #2a0000;
   font-weight: bold;
   box-shadow: inset 0 0 10px rgba(255, 0, 0, 0.4);
+  text-align: center;
 }
 
 input:-webkit-autofill,
