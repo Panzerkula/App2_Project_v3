@@ -137,9 +137,6 @@ function gameDetailHTML(game) {
     <section id="detailView-section">
 
       ${game.status !== "finished" ? `
-        <h3>Players</h3>
-        ${game.players.map(p =>
-        `<p>${p.username}</p>`).join("")}
         <h3>Add Player</h3>
         <input id="new-player-name" type="text" placeholder="Player name" />
         <button id="add-player-btn">Add Player</button> ` : ""}
