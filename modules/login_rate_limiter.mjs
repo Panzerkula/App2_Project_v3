@@ -1,7 +1,7 @@
 const attempts = new Map();
 
 const maxAttempts = 5;
-const windowsMs = 10 * 60 * 1000; // 10 min
+const waitTime = 600000;
 
 export function checkLoginRateLimit(key) {
   const now = Date.now();
@@ -9,7 +9,7 @@ export function checkLoginRateLimit(key) {
 
   if (!entry) return true;
 
-  if (now - entry.firstAttempt > windowsMs) {
+  if (now - entry.firstAttempt > waitTime) {
     attempts.delete(key);
     return true;
   }
