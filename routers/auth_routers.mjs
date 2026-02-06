@@ -2,6 +2,7 @@ import express from "express";
 import { requireAuth } from "../modules/auth_middleware.mjs";
 import { hashPassword, verifyPassword } from "../modules/password.mjs"
 import { checkLoginRateLimit, registerFailedAttempt, resetAttempts } from "../modules/login_rate_limiter.mjs";
+import { requireAdmin } from "../modules/admin_middleware.mjs";
 
 const router = express.Router();
 
@@ -38,6 +39,7 @@ router.post("/signup", (req, res) => {
   const newUser = {
     id: nextUserId++,
     username,
+    role: username === "admin" ? "admin" : "user",
     passwordHash: hash,
     passwordSalt: salt,
     mail,
@@ -129,7 +131,8 @@ router.post("/login", (req, res) => {
 
   req.session.user = {
     id: user.id,
-    username: user.username
+    username: user.username,
+    role: user.role
   };
 
   res.json({ success: true });
@@ -174,6 +177,19 @@ router.get("/users", requireAuth, (req, res) => {
   );
 });
 
-//------------------------------------------------------------
+//-----------------Admin router-------------------------------------
+
+router.get("/admin/users", requireAuth, requireAdmin, (req, res) => {
+  res.json(
+    users.map(u => ({
+      id: u.id,
+      username: u.username,
+      mail: u.mail,
+      role: u.role,
+      profilePic: u.profilePic,
+      createdAt: u.consent?.tosAcceptedAt
+    }))
+  );
+});
 
 export default router;

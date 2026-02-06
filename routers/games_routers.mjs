@@ -2,6 +2,7 @@ import express from "express";
 import { requireAuth } from "../modules/auth_middleware.mjs";
 import { validateRoundScores } from "../modules/scores_middleware.mjs";
 import { loadGame, requirePlayer, forbidIfFinished, requireGameOwner } from "../modules/game_middleware.mjs";
+import { requireAdmin } from "../modules/admin_middleware.mjs";
 
 const router = express.Router();
 
@@ -111,5 +112,11 @@ router.post("/:id/finish",
     res.json(req.game);
   }
 );
+
+//----------------Get all games Admin--------------
+
+router.get("/admin/games", requireAuth, requireAdmin, (req, res) => {
+  res.json(games);
+});
 
 export default router;

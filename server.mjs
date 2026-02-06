@@ -1,6 +1,7 @@
 import express from "express";
 import authRouters from "./routers/auth_routers.mjs";
 import { requireAuth } from "./modules/auth_middleware.mjs";
+import { requireAdmin } from "./modules/admin_middleware.mjs";
 import session from "express-session";
 import gamesRouters from "./routers/games_routers.mjs";
 import path from "path";
