@@ -1,6 +1,7 @@
 import express from "express";
 import { requireAuth } from "../modules/auth_middleware.mjs";
 import { hashPassword, verifyPassword } from "../modules/password.mjs"
+import { checkLoginRateLimit, registerFailedAttempt, resetAttempts } from "../modules/login_rate_limiter.mjs";
 
 const router = express.Router();
 
@@ -99,8 +100,17 @@ router.delete("/me", requireAuth, (req, res) => {
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
 
+  const key = `${req.ip}:${username}`;
+
+  if (!checkLoginRateLimit(key)) {
+    return res.status(429).json({
+      error: "Too many login attempts. Try again later."
+    });
+  }
+
   const user = users.find(u => u.username === username);
   if (!user) {
+    registerFailedAttempt(key);
     return res.status(401).json({ error: "Invalid username or password" });
   }
 
@@ -111,8 +121,11 @@ router.post("/login", (req, res) => {
   );
 
   if (!valid) {
+    registerFailedAttempt(key);
     return res.status(401).json({ error: "Invalid username or password" });
   }
+
+  resetAttempts(key);
 
   req.session.user = {
     id: user.id,
