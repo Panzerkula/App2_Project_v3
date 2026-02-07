@@ -1,4 +1,4 @@
-Fullstack Game Score Tracker is a web-based application designed to manage turn-based game scoring with role-based access for regular users and administrators.
+Game Score Tracker is a fullstack web-based application designed to manage turn-based game scoring with role-based access for regular users and administrators.
 
 Users can create games, enter and track scores across multiple rounds, and review previously completed games. Administrators have elevated privileges, including the ability to view all users and games, as well as remove users or games when necessary.
 The project is actively under development, and some features are not yet fully implemented.
