@@ -10,6 +10,7 @@ Insomnia test collections, middleware documentation, and Terms of Service / Data
 
 
 
+
 Feature planning:
 https://miro.com/app/board/uXjVGO-KVU0=/
 
@@ -18,9 +19,15 @@ https://panzerkula.atlassian.net/jira/software/projects/SCRUM/boards/1
 
 
 
+
 Current limitations / known issues:
+
 Application not yet wired to a database, using only session storage
+
 Administrator-privileges not yet fully implemented
+
 Users' profile pictures can currently not be changed
+
 Header image currently only suited for desktop
+
 Still able to add players even after scores of a game has been added
