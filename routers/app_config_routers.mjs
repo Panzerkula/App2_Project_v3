@@ -1,0 +1,1 @@
+//Will contain routers for the application configuration as a whole (such as UI assets), not specific functionalities.

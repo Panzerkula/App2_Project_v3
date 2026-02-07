@@ -9,7 +9,7 @@ function totalScore(player) {
 
 function signInHTML() {
   return `
-    <h1>Mexican Train Score Tracker</h1>
+    <img src="/assets/header.png">
 
     <section id="login-section">
       <h2>Login</h2>
@@ -27,7 +27,7 @@ function signInHTML() {
 
 function signUpHTML() {
   return `
-    <h1>Mexican Train Score Tracker</h1>
+    <img src="/assets/header.png">
 
     <section id="signup-section">
       <h2>Create Account</h2>
@@ -63,7 +63,7 @@ function signUpHTML() {
 
 function loggedInHTML(user) {
   return `
-    <h1>Mexican Train Score Tracker</h1>
+    <img src="/assets/header.png">
 
     <section id="dashboard-section">
       <h2>Welcome, <span id="username">${user.username}</span></h2>
@@ -90,9 +90,10 @@ function loggedInHTML(user) {
 
 function userViewHTML(user) {
   return `
-    <h1>Your Account</h1>
+    <img src="/assets/header.png">
 
     <section id="user-section">
+      <h2>Your Account</h2>
       <img
         id="profile-pic"
         src="${user.profilePic}"
@@ -113,7 +114,7 @@ function userViewHTML(user) {
 
 function editAccountHTML() {
   return `
-    <h1>Mexican Train Score Tracker</h1>
+    <img src="/assets/header.png">
 
     <section id="editAccount-section">
       <h2>Edit Account</h2>
@@ -133,7 +134,7 @@ function editAccountHTML() {
 
 function gameDetailHTML(game) {
   return `
-    <h1>Mexican Train Score Tracker</h1>
+    <img src="/assets/header.png">
     <section id="detailView-section">
 
       ${game.status !== "finished" ? `
