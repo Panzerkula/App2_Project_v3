@@ -2,7 +2,7 @@ export function loadGame(games) {
     return function (req, res, next) {
         const gameId = Number(req.params.id);
         const game = games.find(g => g.id === gameId);
-        
+      
         if (!game) {
             return res.status(404).json({ error: "Game not found" });
         }
