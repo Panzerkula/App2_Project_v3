@@ -37,6 +37,41 @@ h2 {
 }
 
 /* --------------------
+   App Header
+-------------------- */
+
+.app-header {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto 30px;
+  align-items: center;
+}
+
+.app-header img {
+  width: 100%;
+  height: auto;
+  display: block;
+
+  filter:
+    drop-shadow(0 0 4px rgba(255, 0, 0, 0.2))
+    drop-shadow(0 0 8px rgba(179, 0, 0, 0.4));
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  .app-header img {
+    max-height: 120px;
+    object-fit: contain;
+    align-items: center;
+  }
+}
+
+
+/* --------------------
    Sections
 -------------------- */
 

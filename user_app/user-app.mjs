@@ -9,7 +9,9 @@ function totalScore(player) {
 
 function signInHTML() {
   return `
-    <img src="/assets/header.png">
+    <div class="app-header">
+      <img src="/assets/header.svg" alt="Game Score Tracker">
+    </div>
 
     <section id="login-section">
       <h2>Login</h2>
@@ -27,7 +29,9 @@ function signInHTML() {
 
 function signUpHTML() {
   return `
-    <img src="/assets/header.png">
+    <div class="app-header">
+      <img src="/assets/header.svg" alt="Game Score Tracker">
+    </div>
 
     <section id="signup-section">
       <h2>Create Account</h2>
@@ -63,7 +67,9 @@ function signUpHTML() {
 
 function loggedInHTML(user) {
   return `
-    <img src="/assets/header.png">
+    <div class="app-header">
+      <img src="/assets/header.svg" alt="Game Score Tracker">
+    </div>
 
     <section id="dashboard-section">
       <h2>Welcome, <span id="username">${user.username}</span></h2>
@@ -90,7 +96,9 @@ function loggedInHTML(user) {
 
 function userViewHTML(user) {
   return `
-    <img src="/assets/header.png">
+    <div class="app-header">
+      <img src="/assets/header.svg" alt="Game Score Tracker">
+    </div>
 
     <section id="user-section">
       <h2>Your Account</h2>
@@ -114,7 +122,9 @@ function userViewHTML(user) {
 
 function editAccountHTML() {
   return `
-    <img src="/assets/header.png">
+    <div class="app-header">
+      <img src="/assets/header.svg" alt="Game Score Tracker">
+    </div>
 
     <section id="editAccount-section">
       <h2>Edit Account</h2>
@@ -134,7 +144,10 @@ function editAccountHTML() {
 
 function gameDetailHTML(game) {
   return `
-    <img src="/assets/header.png">
+    <div class="app-header">
+      <img src="/assets/header.svg" alt="Game Score Tracker">
+    </div>
+    
     <section id="detailView-section">
 
       ${game.status === "waiting" ? `
