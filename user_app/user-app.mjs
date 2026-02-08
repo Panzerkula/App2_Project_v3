@@ -137,13 +137,15 @@ function gameDetailHTML(game) {
     <img src="/assets/header.png">
     <section id="detailView-section">
 
-      ${game.status !== "finished" ? `
+      ${game.status === "waiting" ? `
         <h3>Add Player</h3>
         <input id="new-player-name" type="text" placeholder="Player name" />
-        <button id="add-player-btn">Add Player</button> ` : ""}
+        <button id="add-player-btn">Add Player</button>
+        <button id="start-game-btn">Start Game</button>
+      ` : ""}
 
       <h3>Scores</h3>
-      <table border="0.1">
+      <table border="1">
         <thead>
           <tr>
             <th>Player</th>
@@ -163,17 +165,25 @@ function gameDetailHTML(game) {
         </tbody>
       </table>
 
-      ${game.status !== "finished" ? `
-      <h3>Add Round</h3>
-      <div id="score-inputs">
-        ${game.players.map(p =>
-        `<div>${p.username}:<input type="number" data-user="${p.username}" /></div>
-        `).join("")}
-      </div>
-      <button id="add-round-btn">Add Round</button>
+      ${game.status === "started" ? `
+        <h3>Add Round</h3>
+        <div id="score-inputs">
+          ${game.players.map(p => `
+            <div class="score-row">
+              <span class="player-name">${p.username}</span>
+              <input type="number" data-user="${p.username}" />
+            </div>
+          `).join("")}
+        </div>
+        <button id="add-round-btn">Add Round</button>
       ` : ""}
+
       <button id="back-to-dashboard-btn">Home</button>
-      ${game.status !== "finished" ? ` <button id="finish-game-btn">Finish Game</button> ` : ""}
+
+      ${game.status === "started" ? `
+        <button id="finish-game-btn">Finish Game</button>
+      ` : ""}
+    </section>
   `;
 }
 
@@ -216,12 +226,16 @@ function showEditUser(user) {
 function showGameDetail(game) {
   app.innerHTML = gameDetailHTML(game);
   wireBackToDashboard();
-  if (game.status !== "finished") { 
-    wireAddPlayer(game.id); 
+
+  if (game.status === "waiting") {
+    wireAddPlayer(game.id);
+    wireStartGame(game.id);
+  }
+
+  if (game.status === "started") {
     wireAddRound(game.id);
     wireFinishGame(game.id);
   }
-
 }
 
 // ----------------Check me----------------
@@ -542,6 +556,30 @@ function wireAddPlayer(gameId) {
 
     if (!res.ok) {
       alert("Could not add player");
+      return;
+    }
+
+    selectGame(gameId);
+  });
+}
+
+//-----------------Start game---------------------
+
+function wireStartGame(gameId) {
+  const btn = document.getElementById("start-game-btn");
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    const confirmed = confirm("Start the game? Players will be locked.");
+    if (!confirmed) return;
+
+    const res = await fetch(`/games/${gameId}/start`, {
+      method: "POST",
+      credentials: "same-origin"
+    });
+
+    if (!res.ok) {
+      alert("Failed to start game");
       return;
     }
 

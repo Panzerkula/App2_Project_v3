@@ -239,6 +239,40 @@ button:hover {
 }
 
 /* --------------------
+   Score Input Rows
+-------------------- */
+
+#score-inputs {
+  max-width: 420px;
+  margin: 0 auto 20px;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  background: #121212;
+  box-shadow: 0 0 6px rgba(179, 0, 0, 0.25);
+  border-radius: 4px;
+}
+
+.score-row .player-name {
+  flex: 1;
+  text-align: right;
+  font-weight: bold;
+  color: #e5e5e5;
+}
+
+.score-row input[type="number"] {
+  flex: 1;
+  max-width: 180px;
+  margin: 0;
+}
+
+/* --------------------
    Scores Table
 -------------------- */
 

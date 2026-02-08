@@ -82,6 +82,23 @@ router.post("/:id/players", requireAuth, (req, res) => {
   res.status(201).json(game);
 });
 
+//-------------------Start game---------------------
+
+router.post("/:id/start",
+  requireAuth,
+  loadGame(games),
+  requireGameOwner,
+  forbidIfFinished,
+  (req, res) => {
+    if (req.game.status !== "waiting") {
+      return res.status(409).json({ error: "Game already started" });
+    }
+
+    req.game.status = "started";
+    res.json(req.game);
+  }
+);
+
 //------------------Add scores-----------------------
 
 router.post("/:id/scores",
@@ -92,11 +109,20 @@ router.post("/:id/scores",
   validateRoundScores,
   (req, res) => {
     const game = req.game; const { scores } = req.body;
+
+    if (game.status !== "started") {
+      return res.status(409).json({ error: "Game has not started yet" });
+    }
     
     for (const { username, score } of scores) {
       const player = game.players.find(p => p.username === username);
-      if (player) player.scores.push(score);
-    } res.json(game);
+      
+      if (player) {
+        player.scores.push(score);
+      }
+    }
+
+    res.json(game);
   }
 );
 
