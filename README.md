@@ -27,5 +27,3 @@ Application not yet wired to a database, using only session storage
 Administrator-privileges not yet fully implemented
 
 Users' profile pictures can currently not be changed
-
-Header image currently only suited for desktop
