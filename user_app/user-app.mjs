@@ -16,8 +16,8 @@ function signInHTML() {
     <section id="login-section">
       <h2>Login</h2>
       <form id="login-form">
-        <input name="username" type="text" placeholder="Username" required />
-        <input name="password" type="password" placeholder="Password" required />
+        <input name="username" type="text" placeholder="Username" required, maxlength="20"/>
+        <input name="password" type="password" placeholder="Password" required, maxlength="20"/>
         <button type="submit">Login</button>
         <p>Don't have an account? Click <a href="#" id="create-account-link">here</p>
       </form>
@@ -36,12 +36,12 @@ function signUpHTML() {
     <section id="signup-section">
       <h2>Create Account</h2>
       <form id="signup-form">
-        <input name="username" type="text" placeholder="Username" required />
-        <input name="password" type="password" placeholder="Password" required />
-        <input name="mail" type="email" placeholder="Email" required />
+        <input name="username" type="text" placeholder="Username", maxlength="20" required/>
+        <input name="password" type="password" placeholder="Password" required, maxlength="20"/>
+        <input name="mail" type="email" placeholder="Email" required, maxlength="20"/>
 
         <label>
-          <input type="checkbox" name="acceptTos" />
+          <input type="checkbox" name="acceptTos"/>
           I accept the <a href="#" id="tos-link">Terms of Service and Data Privacy Policy</a>
         </label>
 
@@ -130,8 +130,8 @@ function editAccountHTML() {
       <h2>Edit Account</h2>
 
       <form id="edit-form">
-        <input name="username" type="text" placeholder="New username (optional)" />
-        <input name="password" type="password" placeholder="New password (optional)" />
+        <input name="username" type="text" placeholder="New username (optional)" maxlength="20"/>
+        <input name="password" type="password" placeholder="New password (optional)" maxlength="20"/>
 
         <button type="submit">Confirm</button>
         <button type="button" id="return-to-loggedIn">Home</button>
@@ -152,7 +152,7 @@ function gameDetailHTML(game) {
 
       ${game.status === "waiting" ? `
         <h3>Add Player</h3>
-        <input id="new-player-name" type="text" placeholder="Player name" />
+        <input id="new-player-name" type="text" placeholder="Player name" maxlength="20"/>
         <button id="add-player-btn">Add Player</button>
         <button id="start-game-btn">Start Game</button>
       ` : ""}
@@ -184,7 +184,7 @@ function gameDetailHTML(game) {
           ${game.players.map(p => `
             <div class="score-row">
               <span class="player-name">${p.username}</span>
-              <input type="number" data-user="${p.username}" />
+              <input type="number" data-user="${p.username}" maxlength="20"/>
             </div>
           `).join("")}
         </div>
