@@ -28,6 +28,11 @@ app.use(
   express.static(path.join(process.cwd(), "assets"))
 );
 
+app.use(
+  "/views",
+  express.static(path.join(process.cwd(), "views"))
+);
+
 app.use("/games", gamesRouters);
 
 app.get("/games", requireAuth, (req, res) => {

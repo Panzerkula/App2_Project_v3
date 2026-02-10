@@ -166,6 +166,13 @@ button:hover {
   margin-top: 10px;
 }
 
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 /* --------------------
    Output / Debug
 -------------------- */

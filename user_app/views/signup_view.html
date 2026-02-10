@@ -1,0 +1,53 @@
+<div class="app-header">
+    <img src="/assets/header.svg" alt="Game Score Tracker">
+</div>
+
+<section id="signup-section">
+    <h2>Create Account</h2>
+    <form id="signup-form">
+        <input
+            name="username"
+            type="text"
+            placeholder="Username",
+            maxlength="20"
+            required
+        />
+
+        <input
+            name="password"
+            type="password"
+            placeholder="Password",
+            maxlength="20"
+            required
+        />
+        
+        <input
+            name="mail"
+            type="email"
+            placeholder="Email",
+            maxlength="20"
+            required
+        />
+
+        <label>
+            <input type="checkbox" name="acceptTos"/>
+            I accept the <a href="#" id="tos-link">Terms of Service and Data Privacy Policy</a>
+        </label>
+
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <p>
+    Already have an account?
+    <a href="#" id="back-to-signin-link">Log in</a>
+    </p>
+</section>
+<div id="tos-modal" class="modal hidden">
+    <div class="modal-content">
+    <button id="close-tos">&times;</button>
+        <pre id="tos-body"></pre>
+    </div>
+    </div>
+</div>
+
+<pre id="output"></pre>

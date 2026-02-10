@@ -1,0 +1,25 @@
+<div class="app-header">
+  <img src="/assets/header.svg" alt="Game Score Tracker" />
+</div>
+
+<section id="dashboard-section">
+  <h2>Welcome, <span id="username">${user.username}</span></h2>
+
+  <img
+    id="profile-pic"
+    class="profile-pic"
+    src=""
+    alt="Profile picture"
+    onerror="this.src = '/assets/no_pic.png'"
+  />
+
+  <button id="create-game-btn">+ New Game</button>
+
+  <h3>Your Games</h3>
+  <ul id="games-list"></ul>
+
+  <button id="user-view-btn">Account</button>
+  <button id="logout-btn">Logout</button>
+</section>
+
+<pre id="output"></pre>

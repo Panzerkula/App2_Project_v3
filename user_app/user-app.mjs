@@ -5,142 +5,15 @@ function totalScore(player) {
   return player.scores.reduce((sum, s) => sum + s, 0);
 }
 
+async function loadView(path) {
+  const res = await fetch(path, { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(`Failed to load view: ${path}`);
+  }
+  return await res.text();
+}
+
 // --------------innerHTML----------------
-
-function signInHTML() {
-  return `
-    <div class="app-header">
-      <img src="/assets/header.svg" alt="Game Score Tracker">
-    </div>
-
-    <section id="login-section">
-      <h2>Login</h2>
-      <form id="login-form">
-        <input name="username" type="text" placeholder="Username" required, maxlength="20"/>
-        <input name="password" type="password" placeholder="Password" required, maxlength="20"/>
-        <button type="submit">Login</button>
-        <p>Don't have an account? Click <a href="#" id="create-account-link">here</p>
-      </form>
-    </section>
-
-    <pre id="output"></pre>
-  `
-}
-
-function signUpHTML() {
-  return `
-    <div class="app-header">
-      <img src="/assets/header.svg" alt="Game Score Tracker">
-    </div>
-
-    <section id="signup-section">
-      <h2>Create Account</h2>
-      <form id="signup-form">
-        <input name="username" type="text" placeholder="Username", maxlength="20" required/>
-        <input name="password" type="password" placeholder="Password" required, maxlength="20"/>
-        <input name="mail" type="email" placeholder="Email" required, maxlength="20"/>
-
-        <label>
-          <input type="checkbox" name="acceptTos"/>
-          I accept the <a href="#" id="tos-link">Terms of Service and Data Privacy Policy</a>
-        </label>
-
-        <button type="submit">Sign Up</button>
-      </form>
-
-      <p>
-        Already have an account?
-        <a href="#" id="back-to-signin-link">Log in</a>
-      </p>
-    </section>
-    <div id="tos-modal" class="modal hidden">
-      <div class="modal-content">
-        <button id="close-tos">&times;</button>
-          <pre id="tos-body"></pre>
-        </div>
-      </div>
-    </div>
-
-    <pre id="output"></pre>
-  `;
-}
-
-function loggedInHTML(user) {
-  return `
-    <div class="app-header">
-      <img src="/assets/header.svg" alt="Game Score Tracker">
-    </div>
-
-    <section id="dashboard-section">
-      <h2>Welcome, <span id="username">${user.username}</span></h2>
-
-      <img
-        id="profile-pic"
-        src="${user.profilePic}"
-        alt="Profile picture"
-        style="width:120px; height:120px; border-radius:50%; object-fit:cover;"
-        onerror="this.src='/assets/no_pic.png'">
-      
-      <button id="create-game-btn">+ New Game</button>
-
-      <h3>Your Games</h3>
-      <ul id="games-list"></ul>
-
-      <button id="user-view-btn">Account</button>
-      <button id="logout-btn">Logout</button>
-    </section>
-
-    <pre id="output"></pre>
-  `;
-}
-
-function userViewHTML(user) {
-  return `
-    <div class="app-header">
-      <img src="/assets/header.svg" alt="Game Score Tracker">
-    </div>
-
-    <section id="user-section">
-      <h2>Your Account</h2>
-      <img
-        id="profile-pic"
-        src="${user.profilePic}"
-        alt="Profile picture"
-        style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-
-      <p><strong>Username:</strong> ${user.username}</p>
-      <p><strong>Email:</strong> ${user.mail}</p>
-
-      <button id="edit-user-btn">Edit account</button>
-      <button id="delete-user-btn">Delete account</button>
-      <button id="back-to-dashboard-btn">Home</button>
-    </section>
-
-    <pre id="output"></pre>
-  `;
-}
-
-function editAccountHTML() {
-  return `
-    <div class="app-header">
-      <img src="/assets/header.svg" alt="Game Score Tracker">
-    </div>
-
-    <section id="editAccount-section">
-      <h2>Edit Account</h2>
-
-      <form id="edit-form">
-        <input name="username" type="text" placeholder="New username (optional)" maxlength="20"/>
-        <input name="password" type="password" placeholder="New password (optional)" maxlength="20"/>
-
-        <button type="submit">Confirm</button>
-        <button type="button" id="return-to-loggedIn">Home</button>
-      </form>
-    </section>
-
-    <pre id="output"></pre>
-  `;
-}
 
 function gameDetailHTML(game) {
   return `
@@ -150,88 +23,111 @@ function gameDetailHTML(game) {
     
     <section id="detailView-section">
 
-      ${game.status === "waiting" ? `
+      ${
+        game.status === "waiting"
+          ? `
         <h3>Add Player</h3>
         <input id="new-player-name" type="text" placeholder="Player name" maxlength="20"/>
         <button id="add-player-btn">Add Player</button>
         <button id="start-game-btn">Start Game</button>
-      ` : ""}
+      `
+          : ""
+      }
 
       <h3>Scores</h3>
       <table border="1">
         <thead>
           <tr>
             <th>Player</th>
-            ${game.players[0]?.scores.map((_, i) =>
-              `<th>Round ${i + 1}</th>`).join("")}
+            ${game.players[0]?.scores
+              .map((_, i) => `<th>Round ${i + 1}</th>`)
+              .join("")}
               <th>Total</th>
             </tr>
           </thead>
           <tbody>
-            ${game.players.map(p => `
+            ${game.players
+              .map(
+                (p) => `
             <tr>
             <td>${p.username}</td>
-            ${p.scores.map(s => `<td>${s}</td>`).join("")}
+            ${p.scores.map((s) => `<td>${s}</td>`).join("")}
             <td><strong>${totalScore(p)}</strong></td>
           </tr>
-          `).join("")}
+          `,
+              )
+              .join("")}
         </tbody>
       </table>
 
-      ${game.status === "started" ? `
+      ${
+        game.status === "started"
+          ? `
         <h3>Add Round</h3>
         <div id="score-inputs">
-          ${game.players.map(p => `
+          ${game.players
+            .map(
+              (p) => `
             <div class="score-row">
               <span class="player-name">${p.username}</span>
               <input type="number" data-user="${p.username}" maxlength="20"/>
             </div>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </div>
         <button id="add-round-btn">Add Round</button>
-      ` : ""}
+      `
+          : ""
+      }
 
       <button id="back-to-dashboard-btn">Home</button>
 
-      ${game.status === "started" ? `
+      ${
+        game.status === "started"
+          ? `
         <button id="finish-game-btn">Finish Game</button>
-      ` : ""}
+      `
+          : ""
+      }
     </section>
   `;
 }
 
 // ----------------Ui handlers----------------
 
-function showSignUp() {
-  app.innerHTML = signUpHTML();
+async function showSignUp() {
+  app.innerHTML = await loadView("/views/signup_view.html");
   wireSignup();
   wireTosModal();
   wireBackToSignIn();
 }
 
-function showSignIn() {
-  app.innerHTML = signInHTML();
+async function showSignIn() {
+  app.innerHTML = await loadView("/views/login_view.html");
   wireLogin();
   wireCreateAccountLink();
 }
 
-function showDashBoard() {
-  app.innerHTML = loggedInHTML(currentUser);
+async function showDashBoard() {
+  app.innerHTML = await loadView("/views/dashboard_view.html");
+  renderDashboardView();
   wireLogout();
   wireCreateGame();
   wireUserView();
   loadGames();
 }
 
-function showUserView() {
-  app.innerHTML = userViewHTML(currentUser);
+async function showUserView() {
+  app.innerHTML = await loadView("views/account_view.html");
+  renderAccountView(currentUser);
   wireEditAccount();
   wireDeleteAccount();
   wireBackToDashboard();
 }
 
-function showEditUser(user) {
-  app.innerHTML = editAccountHTML(user);
+async function showEditUser() {
+  app.innerHTML = await loadView("/views/edit_view.html");
   wireEditForm();
   wireReturnFromEdit();
 }
@@ -255,7 +151,7 @@ function showGameDetail(game) {
 
 async function loadCurrentUser() {
   const res = await fetch("/auth/me", {
-    credentials: "same-origin"
+    credentials: "same-origin",
   });
 
   if (!res.ok) {
@@ -281,14 +177,14 @@ function wireSignup() {
       username: signupForm.username.value,
       password: signupForm.password.value,
       mail: signupForm.mail.value,
-      acceptTos: signupForm.acceptTos.checked
+      acceptTos: signupForm.acceptTos.checked,
     };
 
     const res = await fetch("/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     const data = await res.json();
@@ -320,14 +216,14 @@ function wireLogin() {
 
     const payload = {
       username: loginForm.username.value,
-      password: loginForm.password.value
+      password: loginForm.password.value,
     };
 
     const res = await fetch("/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     const data = await res.json();
@@ -348,6 +244,14 @@ function wireBackToSignIn() {
   });
 }
 
+function renderDashboardView() {
+  document.getElementById("username").textContent = currentUser.username;
+
+  const img = document.getElementById("profile-pic");
+  img.src = currentUser.profilePic;
+  img.onerror = () => (img.src = "/assets/no_pic.png");
+}
+
 // ----------------Logout----------------
 
 function wireLogout() {
@@ -356,7 +260,7 @@ function wireLogout() {
   logoutBtn.addEventListener("click", async () => {
     await fetch("/auth/logout", {
       method: "POST",
-      credentials: "same-origin"
+      credentials: "same-origin",
     });
 
     showSignIn();
@@ -366,26 +270,25 @@ function wireLogout() {
 // ---------------User view---------------
 
 function wireUserView() {
-  document.getElementById("user-view-btn").addEventListener("click", showUserView);
+  document
+    .getElementById("user-view-btn")
+    .addEventListener("click", showUserView);
 }
 
 // -------------Delete Account-------------
 
 function wireDeleteAccount() {
-
   const btn = document.getElementById("delete-user-btn");
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
-    const confirmed = confirm(
-      "Are you sure you want to delete your account?"
-    );
+    const confirmed = confirm("Are you sure you want to delete your account?");
 
     if (!confirmed) return;
 
     const res = await fetch("/auth/me", {
       method: "DELETE",
-      credentials: "same-origin"
+      credentials: "same-origin",
     });
 
     if (res.ok) {
@@ -395,6 +298,14 @@ function wireDeleteAccount() {
 }
 
 // --------------Edit account---------------
+
+function renderAccountView(user) {
+  document.getElementById("account-username").textContent = user.username;
+  document.getElementById("account-email").textContent = user.mail;
+
+  const img = document.getElementById("profile-pic");
+  img.src = user.profilePic || "/assets/no_pic.png";
+}
 
 function wireEditAccount() {
   const btn = document.getElementById("edit-user-btn");
@@ -414,14 +325,14 @@ function wireEditForm() {
 
     const payload = {
       username: editForm.username.value || undefined,
-      password: editForm.password.value || undefined
+      password: editForm.password.value || undefined,
     };
 
     const res = await fetch("/auth/me", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     const data = await res.json();
@@ -480,13 +391,13 @@ function wireCreateGame() {
 
   btn.addEventListener("click", async () => {
     const name = prompt("Name your game:");
-    
+
     if (!name) return;
     const res = await fetch("/games", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
-      body: JSON.stringify({ name })
+      body: JSON.stringify({ name }),
     });
 
     if (!res.ok) {
@@ -505,7 +416,7 @@ async function loadGames() {
   list.innerHTML = "<li>Loading...</li>";
 
   const res = await fetch("/games", {
-    credentials: "same-origin"
+    credentials: "same-origin",
   });
 
   if (!res.ok) {
@@ -538,7 +449,7 @@ async function loadGames() {
 
 async function selectGame(gameId) {
   const res = await fetch(`/games/${gameId}`, {
-    credentials: "same-origin"
+    credentials: "same-origin",
   });
 
   if (!res.ok) {
@@ -564,7 +475,7 @@ function wireAddPlayer(gameId) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
-      body: JSON.stringify({ username })
+      body: JSON.stringify({ username }),
     });
 
     if (!res.ok) {
@@ -588,7 +499,7 @@ function wireStartGame(gameId) {
 
     const res = await fetch(`/games/${gameId}/start`, {
       method: "POST",
-      credentials: "same-origin"
+      credentials: "same-origin",
     });
 
     if (!res.ok) {
@@ -608,16 +519,16 @@ function wireAddRound(gameId) {
   btn.addEventListener("click", async () => {
     const inputs = document.querySelectorAll("#score-inputs input");
 
-    const scores = [...inputs].map(input => ({
+    const scores = [...inputs].map((input) => ({
       username: input.dataset.user,
-      score: Number(input.value || 0)
+      score: Number(input.value || 0),
     }));
 
     const res = await fetch(`/games/${gameId}/scores`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
-      body: JSON.stringify({ scores })
+      body: JSON.stringify({ scores }),
     });
 
     if (!res.ok) {
@@ -641,7 +552,7 @@ function wireFinishGame(gameId) {
 
     const res = await fetch(`/games/${gameId}/finish`, {
       method: "POST",
-      credentials: "same-origin"
+      credentials: "same-origin",
     });
 
     if (!res.ok) {
@@ -657,11 +568,11 @@ function wireFinishGame(gameId) {
 
 function wireBackToDashboard() {
   const btn = document.getElementById("back-to-dashboard-btn");
-  
+
   if (!btn) return;
   btn.addEventListener("click", async () => {
     showDashBoard();
-  })
+  });
 }
 
 //-----------------------------------------------

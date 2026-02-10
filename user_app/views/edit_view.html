@@ -1,0 +1,36 @@
+<div class="app-header">
+  <img src="/assets/header.svg" alt="Game Score Tracker" />
+</div>
+
+<section id="editAccount-section">
+  <h2>Edit Account</h2>
+
+  <img
+    id="profile-pic"
+    class="profile-pic"
+    src=""
+    alt="Profile picture"
+    onerror="this.src = '/assets/no_pic.png'"
+  />
+  <br />
+
+  <form id="edit-form">
+    <input
+      name="username"
+      type="text"
+      placeholder="New username (optional)"
+      maxlength="20"
+    />
+    <input
+      name="password"
+      type="password"
+      placeholder="New password (optional)"
+      maxlength="20"
+    />
+
+    <button type="submit">Confirm</button>
+    <button type="button" id="return-to-loggedIn">Home</button>
+  </form>
+</section>
+
+<pre id="output"></pre>
