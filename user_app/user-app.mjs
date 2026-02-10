@@ -164,7 +164,7 @@ async function loadCurrentUser() {
   showDashBoard();
 }
 
-// ----------------Signup----------------
+// ----------------Signup functions----------------
 
 function wireSignup() {
   const signupForm = document.getElementById("signup-form");
@@ -205,7 +205,7 @@ function wireCreateAccountLink() {
   });
 }
 
-// ----------------Login----------------
+// ----------------Login functions----------------
 
 function wireLogin() {
   const loginForm = document.getElementById("login-form");
@@ -252,7 +252,7 @@ function renderDashboardView() {
   img.onerror = () => (img.src = "/assets/no_pic.png");
 }
 
-// ----------------Logout----------------
+// ----------------Logout function----------------
 
 function wireLogout() {
   const logoutBtn = document.getElementById("logout-btn");
@@ -267,7 +267,7 @@ function wireLogout() {
   });
 }
 
-// ---------------User view---------------
+// ---------------User view function---------------
 
 function wireUserView() {
   document
@@ -275,7 +275,7 @@ function wireUserView() {
     .addEventListener("click", showUserView);
 }
 
-// -------------Delete Account-------------
+// -------------Delete account function-------------
 
 function wireDeleteAccount() {
   const btn = document.getElementById("delete-user-btn");
@@ -297,7 +297,7 @@ function wireDeleteAccount() {
   });
 }
 
-// --------------Edit account---------------
+// --------------Edit account functions---------------
 
 function renderAccountView(user) {
   document.getElementById("account-username").textContent = user.username;
@@ -352,7 +352,7 @@ function wireReturnFromEdit() {
   });
 }
 
-// ------------------ToS-------------------
+// ------------------ToS function-------------------
 
 function wireTosModal() {
   const tosLink = document.getElementById("tos-link");
@@ -384,7 +384,7 @@ function wireTosModal() {
   });
 }
 
-//-----------------Create game------------------------
+//-----------------Create game function------------------------
 
 function wireCreateGame() {
   const btn = document.getElementById("create-game-btn");
@@ -409,7 +409,7 @@ function wireCreateGame() {
   });
 }
 
-//------------------Load games------------------------
+//------------------Load games function------------------------
 
 async function loadGames() {
   const list = document.getElementById("games-list");
@@ -445,7 +445,7 @@ async function loadGames() {
   }
 }
 
-//-----------------Game Details-----------------
+//-----------------Game Details function-----------------
 
 async function selectGame(gameId) {
   const res = await fetch(`/games/${gameId}`, {
@@ -461,7 +461,7 @@ async function selectGame(gameId) {
   showGameDetail(game);
 }
 
-//------------------Add player------------------
+//------------------Add player funtion------------------
 
 function wireAddPlayer(gameId) {
   const btn = document.getElementById("add-player-btn");
@@ -487,7 +487,7 @@ function wireAddPlayer(gameId) {
   });
 }
 
-//-----------------Start game---------------------
+//-----------------Start game funtion---------------------
 
 function wireStartGame(gameId) {
   const btn = document.getElementById("start-game-btn");
@@ -511,7 +511,7 @@ function wireStartGame(gameId) {
   });
 }
 
-//-----------------Add round---------------------
+//-----------------Add round function---------------------
 
 function wireAddRound(gameId) {
   const btn = document.getElementById("add-round-btn");
@@ -540,7 +540,7 @@ function wireAddRound(gameId) {
   });
 }
 
-//---------------Finish Game-------------------
+//---------------Finish game function-------------------
 
 function wireFinishGame(gameId) {
   const btn = document.getElementById("finish-game-btn");
@@ -564,7 +564,7 @@ function wireFinishGame(gameId) {
   });
 }
 
-//-------------Back to Dashboard---------------
+//-------------Back to Dashboard function---------------
 
 function wireBackToDashboard() {
   const btn = document.getElementById("back-to-dashboard-btn");
@@ -575,6 +575,6 @@ function wireBackToDashboard() {
   });
 }
 
-//-----------------------------------------------
+//------------------------------------------------------
 
 loadCurrentUser();
