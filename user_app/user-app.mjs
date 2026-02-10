@@ -364,7 +364,7 @@ function wireTosModal() {
     e.preventDefault();
 
     if (!tosBody.textContent) {
-      const res = await fetch("/terms_of_service.md");
+      const res = await fetch("/views/terms_of_service.html");
       console.log("ToS status:", res.status);
       const text = await res.text();
       tosBody.textContent = text;
