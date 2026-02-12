@@ -20,7 +20,7 @@ async function loadView(path) {
 async function showSignUp() {
   app.innerHTML = await loadView("/views/signup_view.html");
   wireSignup();
-  wireTosModal();
+  wireTosLink();
   wireBackToSignIn();
 }
 
@@ -28,6 +28,11 @@ async function showSignIn() {
   app.innerHTML = await loadView("/views/login_view.html");
   wireLogin();
   wireCreateAccountLink();
+}
+
+async function showTosView() {
+  app.innerHTML = await loadView("/views/terms_of_service.html");
+  wireBackFromTos();
 }
 
 async function showDashBoard() {
@@ -222,35 +227,21 @@ function wireCreateAccountLink() {
   });
 }
 
-function wireTosModal() {
+function wireTosLink() {
   const tosLink = document.getElementById("tos-link");
-  const modal = document.getElementById("tos-modal");
-  const closeTos = document.getElementById("close-tos");
-  const tosBody = document.getElementById("tos-body");
-
   if (!tosLink) return;
 
-  tosLink.addEventListener("click", async (e) => {
+  tosLink.addEventListener("click", (e) => {
     e.preventDefault();
-
-    if (!tosBody.textContent) {
-      const res = await fetch("/views/terms_of_service.html");
-      const text = await res.text();
-      tosBody.textContent = text;
-    }
-
-    modal.classList.remove("hidden");
+    showTosView();
   });
+}
 
-  closeTos.addEventListener("click", () => {
-    modal.classList.add("hidden");
-  });
+function wireBackFromTos() {
+  const btn = document.getElementById("back-from-tos-btn");
+  if (!btn) return;
 
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.add("hidden");
-    }
-  });
+  btn.addEventListener("click", showSignUp);
 }
 
 // ---------------- Dashboard ----------------
