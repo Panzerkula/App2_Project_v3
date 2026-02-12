@@ -31,7 +31,7 @@ async function showSignIn() {
 }
 
 async function showTosView() {
-  app.innerHTML = await loadView("/views/terms_of_service.html");
+  app.innerHTML = await loadView("/views/terms_of_service_view.html");
   wireBackFromTos();
 }
 
