@@ -260,11 +260,6 @@ async function loadGames() {
   try {
     const games = await api.getGames();
 
-    if (!games.length) {
-      list.innerHTML = "<li>No games yet</li>";
-      return;
-    }
-
     list.innerHTML = "";
 
     for (const game of games) {
