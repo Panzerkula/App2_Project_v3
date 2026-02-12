@@ -256,7 +256,6 @@ function renderDashboardView() {
 
 async function loadGames() {
   const list = document.getElementById("games-list");
-  list.innerHTML = "<li>Loading...</li>";
 
   try {
     const games = await api.getGames();
@@ -275,7 +274,7 @@ async function loadGames() {
       list.appendChild(li);
     }
   } catch {
-    list.innerHTML = "<li>Failed to load games</li>";
+    console.log("Failed to load games");
   }
 }
 
@@ -284,7 +283,7 @@ async function selectGame(gameId) {
     const game = await api.getGame(gameId);
     showGameDetail(game);
   } catch {
-    alert("Failed to load game");
+    console.log("Failed to load game");
   }
 }
 
