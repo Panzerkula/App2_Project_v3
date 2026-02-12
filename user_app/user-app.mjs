@@ -1,3 +1,5 @@
+import { api } from "../modules/api.mjs"
+
 const app = document.getElementById("app");
 let currentUser = null;
 
@@ -31,7 +33,7 @@ async function loadCurrentUser() {
 }
 
 
-// ----------------View handlers----------------
+// --------------------View handlers----------------
 
 async function showSignUp() {
   app.innerHTML = await loadView("/views/signup_view.html");
@@ -71,7 +73,6 @@ async function showEditUser() {
 
 async function showGameDetail(game) {
   app.innerHTML = await loadView("/views/game_view.html");
-
   renderGameView(game);
   wireBackToDashboard();
 }
@@ -357,7 +358,7 @@ async function loadGames() {
   }
 }
 
-//-----------------Game Details functions-----------------
+//---------------------Select game-----------------
 
 async function selectGame(gameId) {
   const res = await fetch(`/games/${gameId}`, {
@@ -373,7 +374,7 @@ async function selectGame(gameId) {
   showGameDetail(game);
 }
 
-//------------------Add player funtion------------------
+//---------------------Add player------------------
 
 function wireAddPlayer(gameId) {
   const btn = document.getElementById("add-player-btn");
@@ -485,9 +486,7 @@ function renderGameView(game) {
     document.getElementById("waiting-controls").hidden = false;
     wireAddPlayer(game.id);
     wireStartGame(game.id);
-  }
-
-  if (game.status === "started") {
+  } else if (game.status === "started") {
     document.getElementById("round-controls").hidden = false;
     document.getElementById("finish-game-btn").hidden = false;
 
