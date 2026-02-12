@@ -1,0 +1,39 @@
+<div class="app-header">
+  <img src="/assets/header.svg" alt="Game Score Tracker">
+</div>
+
+<section id="detailView-section">
+
+  <!-- Waiting controls -->
+  <div id="waiting-controls" hidden>
+    <h3>Add Player</h3>
+    <input id="new-player-name" type="text" placeholder="Player name" maxlength="20"/>
+    <button id="add-player-btn">Add Player</button>
+    <button id="start-game-btn">Start Game</button>
+  </div>
+
+  <h3>Scores</h3>
+  <table>
+    <thead>
+      <tr id="scores-head-row">
+        <th>Player</th>
+        <!-- Round headers injected here -->
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="scores-body">
+      <!-- Player rows injected here -->
+    </tbody>
+  </table>
+
+  <!-- Round controls -->
+  <div id="round-controls" hidden>
+    <h3>Add Round</h3>
+    <div id="score-inputs"></div>
+    <button id="add-round-btn">Add Round</button>
+  </div>
+
+  <button id="back-to-dashboard-btn">Home</button>
+  <button id="finish-game-btn" hidden>Finish Game</button>
+
+</section>

@@ -13,88 +13,25 @@ async function loadView(path) {
   return await res.text();
 }
 
-// --------------innerHTML----------------
+// ----------------Get current session----------------
 
-function gameDetailHTML(game) {
-  return `
-    <div class="app-header">
-      <img src="/assets/header.svg" alt="Game Score Tracker">
-    </div>
-    
-    <section id="detailView-section">
+async function loadCurrentUser() {
+  const res = await fetch("/auth/me", {
+    credentials: "same-origin",
+  });
 
-      ${
-        game.status === "waiting"
-          ? `
-        <h3>Add Player</h3>
-        <input id="new-player-name" type="text" placeholder="Player name" maxlength="20"/>
-        <button id="add-player-btn">Add Player</button>
-        <button id="start-game-btn">Start Game</button>
-      `
-          : ""
-      }
+  if (!res.ok) {
+    showSignIn();
+    return;
+  }
 
-      <h3>Scores</h3>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Player</th>
-            ${game.players[0]?.scores
-              .map((_, i) => `<th>Round ${i + 1}</th>`)
-              .join("")}
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${game.players
-              .map(
-                (p) => `
-            <tr>
-            <td>${p.username}</td>
-            ${p.scores.map((s) => `<td>${s}</td>`).join("")}
-            <td><strong>${totalScore(p)}</strong></td>
-          </tr>
-          `,
-              )
-              .join("")}
-        </tbody>
-      </table>
-
-      ${
-        game.status === "started"
-          ? `
-        <h3>Add Round</h3>
-        <div id="score-inputs">
-          ${game.players
-            .map(
-              (p) => `
-            <div class="score-row">
-              <span class="player-name">${p.username}</span>
-              <input type="number" data-user="${p.username}" maxlength="20"/>
-            </div>
-          `,
-            )
-            .join("")}
-        </div>
-        <button id="add-round-btn">Add Round</button>
-      `
-          : ""
-      }
-
-      <button id="back-to-dashboard-btn">Home</button>
-
-      ${
-        game.status === "started"
-          ? `
-        <button id="finish-game-btn">Finish Game</button>
-      `
-          : ""
-      }
-    </section>
-  `;
+  const user = await res.json();
+  currentUser = user;
+  showDashBoard();
 }
 
-// ----------------Ui handlers----------------
+
+// ----------------View handlers----------------
 
 async function showSignUp() {
   app.innerHTML = await loadView("/views/signup_view.html");
@@ -119,7 +56,7 @@ async function showDashBoard() {
 }
 
 async function showUserView() {
-  app.innerHTML = await loadView("views/account_view.html");
+  app.innerHTML = await loadView("/views/account_view.html");
   renderAccountView(currentUser);
   wireEditAccount();
   wireDeleteAccount();
@@ -132,39 +69,14 @@ async function showEditUser() {
   wireReturnFromEdit();
 }
 
-function showGameDetail(game) {
-  app.innerHTML = gameDetailHTML(game);
+async function showGameDetail(game) {
+  app.innerHTML = await loadView("/views/game_view.html");
+
+  renderGameView(game);
   wireBackToDashboard();
-
-  if (game.status === "waiting") {
-    wireAddPlayer(game.id);
-    wireStartGame(game.id);
-  }
-
-  if (game.status === "started") {
-    wireAddRound(game.id);
-    wireFinishGame(game.id);
-  }
 }
 
-// ----------------Check me----------------
-
-async function loadCurrentUser() {
-  const res = await fetch("/auth/me", {
-    credentials: "same-origin",
-  });
-
-  if (!res.ok) {
-    showSignIn();
-    return;
-  }
-
-  const user = await res.json();
-  currentUser = user;
-  showDashBoard();
-}
-
-// ----------------Signup functions----------------
+// ----------------------Signup-----------------------
 
 function wireSignup() {
   const signupForm = document.getElementById("signup-form");
@@ -205,7 +117,7 @@ function wireCreateAccountLink() {
   });
 }
 
-// ----------------Login functions----------------
+// ----------------------Login----------------------
 
 function wireLogin() {
   const loginForm = document.getElementById("login-form");
@@ -252,7 +164,7 @@ function renderDashboardView() {
   img.onerror = () => (img.src = "/assets/no_pic.png");
 }
 
-// ----------------Logout function----------------
+// ----------------------Logout-----------------------
 
 function wireLogout() {
   const logoutBtn = document.getElementById("logout-btn");
@@ -267,7 +179,7 @@ function wireLogout() {
   });
 }
 
-// ---------------User view function---------------
+// ---------------------User view---------------------
 
 function wireUserView() {
   document
@@ -275,7 +187,7 @@ function wireUserView() {
     .addEventListener("click", showUserView);
 }
 
-// -------------Delete account function-------------
+// ------------------Delete account---------------------
 
 function wireDeleteAccount() {
   const btn = document.getElementById("delete-user-btn");
@@ -297,7 +209,7 @@ function wireDeleteAccount() {
   });
 }
 
-// --------------Edit account functions---------------
+// --------------------Edit account-----------------------
 
 function renderAccountView(user) {
   document.getElementById("account-username").textContent = user.username;
@@ -352,7 +264,7 @@ function wireReturnFromEdit() {
   });
 }
 
-// ------------------ToS function-------------------
+// --------------------ToS---------------------
 
 function wireTosModal() {
   const tosLink = document.getElementById("tos-link");
@@ -384,7 +296,7 @@ function wireTosModal() {
   });
 }
 
-//-----------------Create game function------------------------
+//---------------------Create game------------------------
 
 function wireCreateGame() {
   const btn = document.getElementById("create-game-btn");
@@ -409,7 +321,7 @@ function wireCreateGame() {
   });
 }
 
-//------------------Load games function------------------------
+//---------------------Load games------------------------
 
 async function loadGames() {
   const list = document.getElementById("games-list");
@@ -445,7 +357,7 @@ async function loadGames() {
   }
 }
 
-//-----------------Game Details function-----------------
+//-----------------Game Details functions-----------------
 
 async function selectGame(gameId) {
   const res = await fetch(`/games/${gameId}`, {
@@ -562,6 +474,91 @@ function wireFinishGame(gameId) {
 
     showDashBoard();
   });
+}
+
+//---------------Gameview renderer----------------
+
+function renderGameView(game) {
+  renderScoresTable(game);
+
+  if (game.status === "waiting") {
+    document.getElementById("waiting-controls").hidden = false;
+    wireAddPlayer(game.id);
+    wireStartGame(game.id);
+  }
+
+  if (game.status === "started") {
+    document.getElementById("round-controls").hidden = false;
+    document.getElementById("finish-game-btn").hidden = false;
+
+    renderRoundInputs(game);
+    wireAddRound(game.id);
+    wireFinishGame(game.id);
+  }
+}
+
+//--------------Gameview score renderer---------------
+
+function renderScoresTable(game) {
+  const headRow = document.getElementById("scores-head-row");
+  const body = document.getElementById("scores-body");
+
+  headRow.querySelectorAll(".round-col").forEach(el => el.remove());
+  body.innerHTML = "";
+
+  const rounds = game.players[0]?.scores.length || 0;
+
+  const totalHeader = headRow.lastElementChild;
+
+  for (let i = 0; i < rounds; i++) {
+    const th = document.createElement("th");
+    th.textContent = `Round ${i + 1}`;
+    th.classList.add("round-col");
+    headRow.insertBefore(th, totalHeader);
+  }
+
+  for (const player of game.players) {
+    const tr = document.createElement("tr");
+
+    const nameTd = document.createElement("td");
+    nameTd.textContent = player.username;
+    tr.appendChild(nameTd);
+
+    for (const score of player.scores) {
+      const td = document.createElement("td");
+      td.textContent = score;
+      tr.appendChild(td);
+    }
+
+    const totalTd = document.createElement("td");
+    totalTd.innerHTML = `<strong>${totalScore(player)}</strong>`;
+    tr.appendChild(totalTd);
+
+    body.appendChild(tr);
+  }
+}
+
+//-------------------Round inputs-----------------------------
+
+function renderRoundInputs(game) {
+  const container = document.getElementById("score-inputs");
+  container.innerHTML = "";
+
+  for (const player of game.players) {
+    const row = document.createElement("div");
+    row.className = "score-row";
+
+    const label = document.createElement("span");
+    label.className = "player-name";
+    label.textContent = player.username;
+
+    const input = document.createElement("input");
+    input.type = "number";
+    input.dataset.user = player.username;
+
+    row.append(label, input);
+    container.appendChild(row);
+  }
 }
 
 //-------------Back to Dashboard function---------------
