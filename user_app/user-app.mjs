@@ -380,7 +380,7 @@ function wireCreateGame() {
         await api.createGame(name);
         loadGames();
       } catch {
-        alert("Failed to create game");
+        console.log("Failed to create game");
       }
     });
 }
@@ -397,7 +397,7 @@ function wireAddPlayer(gameId) {
       await api.addPlayer(gameId, username);
       selectGame(gameId);
     } catch {
-      alert("Could not add player");
+      console.log("Could not add player");
     }
   });
 }
@@ -413,7 +413,7 @@ function wireStartGame(gameId) {
       await api.startGame(gameId);
       selectGame(gameId);
     } catch {
-      alert("Failed to start game");
+      console.log("Failed to start game");
     }
   });
 }
@@ -433,7 +433,7 @@ function wireAddRound(gameId) {
         await api.addScores(gameId, scores);
         selectGame(gameId);
       } catch {
-        alert("Failed to add scores");
+        console.log("Failed to add scores");
       }
     });
 }
@@ -449,7 +449,7 @@ function wireFinishGame(gameId) {
       await api.finishGame(gameId);
       showDashBoard();
     } catch {
-      alert("Failed to finish game");
+      console.log("Failed to finish game");
     }
   });
 }
