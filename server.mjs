@@ -33,6 +33,10 @@ app.use(
   express.static(path.join(process.cwd(), "views"))
 );
 
+app.use("/modules",
+  express.static(path.join(process.cwd(), "modules"))
+);
+
 app.use("/games", gamesRouters);
 
 app.get("/games", requireAuth, (req, res) => {

@@ -8,7 +8,7 @@ async function request(path, options = {}) {
   const data = await res.json().catch(() => null);
 
   if (!res.ok) {
-    throw new Error(data?.message || "API error");
+    throw new Error(data?.error || "API error");
   }
 
   return data;
