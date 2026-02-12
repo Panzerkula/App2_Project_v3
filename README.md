@@ -22,8 +22,6 @@ https://panzerkula.atlassian.net/jira/software/projects/SCRUM/boards/1
 
 Current limitations / known issues:
 
-Need to move game UI HTML from user-app.mjs to game_view.html
-
 Application not yet wired to a database, using only session storage
 
 Administrator-privileges not yet fully implemented
