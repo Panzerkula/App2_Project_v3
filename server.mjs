@@ -13,8 +13,8 @@ app.use(
   session({
     secret: "dev-secret",
     resave: false,
-    saveUninitialized: false
-  })
+    saveUninitialized: false,
+  }),
 );
 
 app.use(express.json());
@@ -23,19 +23,11 @@ app.use("/auth", authRouters);
 
 app.use(express.static("user_app"));
 
-app.use(
-  "/assets",
-  express.static(path.join(process.cwd(), "assets"))
-);
+app.use("/assets", express.static(path.join(process.cwd(), "assets")));
 
-app.use(
-  "/views",
-  express.static(path.join(process.cwd(), "views"))
-);
+app.use("/views", express.static(path.join(process.cwd(), "views")));
 
-app.use("/modules",
-  express.static(path.join(process.cwd(), "modules"))
-);
+app.use("/modules", express.static(path.join(process.cwd(), "modules")));
 
 app.use("/games", gamesRouters);
 
