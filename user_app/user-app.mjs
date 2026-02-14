@@ -15,7 +15,7 @@ async function loadView(path) {
   return await res.text();
 }
 
-async function initGlobalUI() {
+async function loadGlobalUI() {
   const container = document.getElementById("global-ui");
   container.innerHTML = await loadView("/views/ui_modal.html");
 }
@@ -531,7 +531,7 @@ function showModal({ title, message, input = false, confirmText = "Confirm" }) {
 // ---------------- Init ----------------
 
 async function init() {
-  await initGlobalUI();
+  await loadGlobalUI();
   await loadCurrentUser();
 }
 
