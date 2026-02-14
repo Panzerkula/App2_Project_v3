@@ -15,6 +15,11 @@ async function loadView(path) {
   return await res.text();
 }
 
+async function initGlobalUI() {
+  const container = document.getElementById("global-ui");
+  container.innerHTML = await loadView("/views/ui_modal.html");
+}
+
 // ---------------- View Navigation ----------------
 
 async function showSignUp() {
@@ -368,16 +373,24 @@ function wireCreateGame() {
   document
     .getElementById("create-game-btn")
     .addEventListener("click", async () => {
-      const name = prompt("Name your game:");
-      if (!name) return;
+      const name = await showModal({
+        title: "Create Game",
+        message: "Enter a name for your game:",
+        input: true,
+        confirmText: "Create"
+    }
+  );
 
-      try {
-        await api.createGame(name);
-        loadGames();
-      } catch {
-        console.log("Failed to create game");
-      }
-    });
+  if (!name) return;
+
+    try {
+      await api.createGame(name);
+      loadGames();
+    } catch {
+      console.log("Failed to create game");
+    }
+
+  });
 }
 
 function wireAddPlayer(gameId) {
@@ -402,7 +415,13 @@ function wireStartGame(gameId) {
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
-    if (!confirm("Start the game? Players will be locked.")) return;
+    const confirmed = await showModal({
+      title: "Start Game",
+      message: "Players will be locked. Continue?",
+      confirmText: "Start"
+  });
+
+  if (!confirmed) return;
 
     try {
       await api.startGame(gameId);
@@ -410,6 +429,7 @@ function wireStartGame(gameId) {
     } catch {
       console.log("Failed to start game");
     }
+
   });
 }
 
@@ -438,7 +458,13 @@ function wireFinishGame(gameId) {
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
-    if (!confirm("Finish and save this game?")) return;
+    const confirmed = await showModal({
+      title: "Finish Game",
+      message: "This game will be finalized and cannot be edited.",
+      confirmText: "Finish"
+  });
+
+  if (!confirmed) return;
 
     try {
       await api.finishGame(gameId);
@@ -446,6 +472,7 @@ function wireFinishGame(gameId) {
     } catch {
       console.log("Failed to finish game");
     }
+
   });
 }
 
@@ -456,6 +483,56 @@ function wireBackToDashboard() {
   btn.addEventListener("click", showDashBoard);
 }
 
+//--------------- UI-modal---------------
+
+function showModal({ title, message, input = false, confirmText = "Confirm" }) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById("ui-modal");
+    const titleEl = document.getElementById("modal-title");
+    const messageEl = document.getElementById("modal-message");
+    const inputEl = document.getElementById("modal-input");
+    const cancelBtn = document.getElementById("modal-cancel-btn");
+    const confirmBtn = document.getElementById("modal-confirm-btn");
+
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    confirmBtn.textContent = confirmText;
+
+    if (input) {
+      inputEl.hidden = false;
+      inputEl.value = "";
+      inputEl.focus();
+    } else {
+      inputEl.hidden = true;
+    }
+
+    modal.classList.remove("hidden");
+
+    function cleanup(result) {
+      modal.classList.add("hidden");
+      confirmBtn.removeEventListener("click", onConfirm);
+      cancelBtn.removeEventListener("click", onCancel);
+      resolve(result);
+    }
+
+    function onConfirm() {
+      cleanup(input ? inputEl.value.trim() : true);
+    }
+
+    function onCancel() {
+      cleanup(false);
+    }
+
+    confirmBtn.addEventListener("click", onConfirm);
+    cancelBtn.addEventListener("click", onCancel);
+  });
+}
+
 // ---------------- Init ----------------
 
-loadCurrentUser();
+async function init() {
+  await initGlobalUI();
+  await loadCurrentUser();
+}
+
+init();
