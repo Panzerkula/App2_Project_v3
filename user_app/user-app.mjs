@@ -377,20 +377,18 @@ function wireCreateGame() {
         title: "Create Game",
         message: "Enter a name for your game:",
         input: true,
-        confirmText: "Create"
-    }
-  );
+        confirmText: "Create",
+      });
 
-  if (!name) return;
+      if (!name) return;
 
-    try {
-      await api.createGame(name);
-      loadGames();
-    } catch {
-      console.log("Failed to create game");
-    }
-
-  });
+      try {
+        await api.createGame(name);
+        loadGames();
+      } catch {
+        console.log("Failed to create game");
+      }
+    });
 }
 
 function wireAddPlayer(gameId) {
@@ -418,10 +416,10 @@ function wireStartGame(gameId) {
     const confirmed = await showModal({
       title: "Start Game",
       message: "Players will be locked. Continue?",
-      confirmText: "Start"
-  });
+      confirmText: "Start",
+    });
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
     try {
       await api.startGame(gameId);
@@ -429,7 +427,6 @@ function wireStartGame(gameId) {
     } catch {
       console.log("Failed to start game");
     }
-
   });
 }
 
@@ -461,10 +458,10 @@ function wireFinishGame(gameId) {
     const confirmed = await showModal({
       title: "Finish Game",
       message: "This game will be finalized and cannot be edited.",
-      confirmText: "Finish"
-  });
+      confirmText: "Finish",
+    });
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
     try {
       await api.finishGame(gameId);
@@ -472,7 +469,6 @@ function wireFinishGame(gameId) {
     } catch {
       console.log("Failed to finish game");
     }
-
   });
 }
 
