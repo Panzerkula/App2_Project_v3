@@ -366,16 +366,113 @@ collection:
             send: true
             store: true
           rebuildPath: true
+  - name: Admin
+    meta:
+      id: fld_b1d2bba218d9444f84629671e905dba9
+      created: 1771209642061
+      modified: 1771209642061
+      sortKey: -1771209642061
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/auth/admin/users"
+        name: Get admin
+        meta:
+          id: req_0a7fbd5f37b849eeb05c482dffc1959d
+          created: 1771209788982
+          modified: 1771210431311
+          isPrivate: false
+          description: ""
+          sortKey: -1771210431303
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/auth/signup"
+        name: Admin signup
+        meta:
+          id: req_71b20550f91a4db9b181d7b34ded4eec
+          created: 1771210787416
+          modified: 1771210987922
+          isPrivate: false
+          description: ""
+          sortKey: -1771210787416
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            "username": "admin",
+            "password": "password",
+            "mail": "admin@test.com",
+            "acceptTos": true
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/auth/login"
+        name: Admin login
+        meta:
+          id: req_bee8071edac14ec7ac2cdde59e7663ce
+          created: 1771210959681
+          modified: 1771211085372
+          isPrivate: false
+          description: ""
+          sortKey: -1771210959681
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"username": "admin",
+            	"password": "password"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.3.1
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
 cookieJar:
   name: Default Jar
   meta:
     id: jar_4ebbca9a93253eef9bbfecbb0bce626a318ced0b
     created: 1769544995862
-    modified: 1771078988951
+    modified: 1771211243887
   cookies:
-    - id: 8abaf5cc-1155-4257-b713-bd5afad2d4ba
+    - id: 1e3a8022-a5f9-426e-addc-fefecf9e1af1
       key: connect.sid
-      value: s%3ABQPnJNGEoM3IDwXrJF13m6R-Av7zN0JE.tNYzCeQqpie36DA8xgKzxM%2FRXHsHz0N37ofMAhli96k
+      value: s%3AxruEfZGu0-utPI-yVFKzs9M0Uwnll-sW.XJyEqeBQhjF9aQySXnX9xigkpa%2FFr5uZHEQM3xHhL50
       domain: localhost
       path: /
       secure: false
