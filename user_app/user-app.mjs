@@ -189,7 +189,6 @@ function renderRoundInputs(game) {
 
 // ---------------- Auth ----------------
 
-//planning to create a solution where input text persists through view-changes
 //planning to create a viewmap, so that navigation back and forth between views can be done via browser
 
 async function loadCurrentUser() {
