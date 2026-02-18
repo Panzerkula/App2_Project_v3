@@ -2,6 +2,18 @@ import { api } from "../modules/api.mjs";
 
 const app = document.getElementById("app");
 let currentUser = null;
+const state = {
+  login: {
+    username: "",
+    password: ""
+  },
+  signup: {
+    username: "",
+    password: "",
+    mail: "",
+    acceptTos: false
+  }
+};
 
 // ---------------- Utilities ----------------
 
@@ -20,54 +32,69 @@ async function loadGlobalUI() {
   container.innerHTML = await loadView("/views/ui_modal.html");
 }
 
+async function mountView(path, initFn) {
+  const html = await loadView(path);
+  app.innerHTML = html;
+
+  if (initFn) initFn();
+}
+
 // ---------------- View Navigation ----------------
 
 async function showSignUp() {
-  app.innerHTML = await loadView("/views/signup_view.html");
-  wireSignup();
-  wireTosLink();
-  wireBackToSignIn();
+  await mountView("/views/signup_view.html", () => {
+    initSignupView();
+    wireSignup();
+    wireTosLink();
+    wireBackToSignIn();
+  });
 }
 
 async function showSignIn() {
-  app.innerHTML = await loadView("/views/login_view.html");
-  wireLogin();
-  wireCreateAccountLink();
+  await mountView("/views/login_view.html", () => {
+    initLoginView();
+    wireLogin();
+    wireCreateAccountLink();
+  });
 }
 
 async function showTosView() {
-  app.innerHTML = await loadView("/views/terms_of_service_view.html");
-  wireBackFromTos();
+  await mountView("/views/terms_of_service_view.html", () => {
+    wireBackFromTos();
+  });
 }
 
 async function showDashBoard() {
-  app.innerHTML = await loadView("/views/dashboard_view.html");
-  renderDashboardView();
-  wireLogout();
-  wireCreateGame();
-  wireUserView();
-  loadGames();
+  await mountView("/views/dashboard_view.html", () => {
+    renderDashboardView();
+    wireLogout();
+    wireCreateGame();
+    wireUserView();
+    loadGames();
+  });
 }
 
 async function showUserView() {
-  app.innerHTML = await loadView("/views/account_view.html");
-  renderAccountView(currentUser);
-  wireEditAccount();
-  wireDeleteAccount();
-  wireBackToDashboard();
+  await mountView("/views/account_view.html", () => {
+    renderAccountView(currentUser);
+    wireEditAccount();
+    wireDeleteAccount();
+    wireBackToDashboard();
+  });
 }
 
 async function showEditUser() {
-  app.innerHTML = await loadView("/views/edit_view.html");
-  wireEditForm();
-  wireReturnFromEdit();
+  await mountView("/views/edit_view.html", () => {
+    wireEditForm();
+    wireReturnFromEdit();
+  });
 }
 
 async function showGameDetail(game) {
-  const html = await loadView("/views/game_view.html");
-  app.innerHTML = html;
-  renderGameView(game);
-  wireBackToDashboard();
+  await mountView("/views/game_view.html", () => {
+    renderGameView(game);
+    wireBackToDashboard();
+  });
 }
 
 // ---------------- Game Rendering ----------------
@@ -172,6 +199,50 @@ async function loadCurrentUser() {
   } catch {
     showSignIn();
   }
+}
+
+function initSignupView() {
+  const form = document.getElementById("signup-form");
+  if (!form) return;
+
+  form.username.value = state.signup.username;
+  form.password.value = state.signup.password;
+  form.mail.value = state.signup.mail;
+  form.acceptTos.checked = state.signup.acceptTos;
+
+  form.username.addEventListener("input", e => {
+    state.signup.username = e.target.value;
+  });
+
+  form.password.addEventListener("input", e => {
+    state.signup.password = e.target.value;
+  });
+
+  form.mail.addEventListener("input", e => {
+    state.signup.mail = e.target.value;
+  });
+
+  form.acceptTos.addEventListener("change", e => {
+    state.signup.acceptTos = e.target.checked;
+  });
+}
+
+function initLoginView() {
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+
+  if (!usernameInput || !passwordInput) return;
+
+  usernameInput.value = state.login.username;
+  passwordInput.value = state.login.password;
+
+  usernameInput.addEventListener("input", (e) => {
+    state.login.username = e.target.value;
+  });
+
+  passwordInput.addEventListener("input", (e) => {
+    state.login.password = e.target.value;
+  });
 }
 
 function wireSignup() {
