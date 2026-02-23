@@ -5,14 +5,14 @@ let currentUser = null;
 const state = {
   login: {
     username: "",
-    password: "",
+    password: ""
   },
   signup: {
     username: "",
     password: "",
     mail: "",
-    acceptTos: false,
-  },
+    acceptTos: false
+  }
 };
 
 // ---------------- Utilities ----------------
@@ -209,19 +209,19 @@ function initSignupView() {
   form.mail.value = state.signup.mail;
   form.acceptTos.checked = state.signup.acceptTos;
 
-  form.username.addEventListener("input", (e) => {
+  form.username.addEventListener("input", e => {
     state.signup.username = e.target.value;
   });
 
-  form.password.addEventListener("input", (e) => {
+  form.password.addEventListener("input", e => {
     state.signup.password = e.target.value;
   });
 
-  form.mail.addEventListener("input", (e) => {
+  form.mail.addEventListener("input", e => {
     state.signup.mail = e.target.value;
   });
 
-  form.acceptTos.addEventListener("change", (e) => {
+  form.acceptTos.addEventListener("change", e => {
     state.signup.acceptTos = e.target.checked;
   });
 }
