@@ -5,19 +5,17 @@
 <h3>
     Game Score Tracker is a fullstack web-based application designed to manage turn-based game scoring with role-based access for regular users and administrators.
 </h3>
-<p>
-    Users can create games, enter and track scores across multiple rounds, and review previously completed games. Administrators have elevated privileges, including the ability to view all users and games, as well as remove users or games when necessary.
-    The project is actively under development, and some features are not yet fully implemented.
-</p>
-<p>
-    The backend is built with Node.js using Express.js, with session handling implemented via express-session. The project intentionally minimizes third-party dependencies and currently avoids external npm libraries beyond core tooling.
-</p>
-<p>
-    API endpoints are tested using Insomnia.
-</p>
-<p>
-    Insomnia test collections, middleware documentation, and Terms of Service / Data Protection policies are available in the /documentation directory.
-</p>
+<br>
+<h3>
+    Features:
+</h3>
+<ul>
+    <li>Users can create games, enter and track scores across multiple rounds, and review previously completed games. Administrators have elevated privileges, including the ability to view all users and games, as well as remove users or games when necessary.
+    The project is actively under development, and some features are not yet fully implemented.</li>
+    <li>The backend is built with Node.js using Express.js, with session handling implemented via express-session. The project intentionally minimizes third-party dependencies and currently avoids external npm libraries beyond core tooling.</li>
+    <li>API endpoints are tested using Insomnia.</li>
+    <li>Insomnia test collections, middleware documentation, and Terms of Service / Data Protection policies are available in the /documentation directory.</li>
+</ul>
 <br>
 <h3>
     Feature planning:
