@@ -12,8 +12,11 @@
 <ul>
     <li>Users can create games, enter and track scores across multiple rounds, and review previously completed games. Administrators have elevated privileges, including the ability to view all users and games, as well as remove users or games when necessary.
     The project is actively under development, and some features are not yet fully implemented.</li>
+
     <li>The backend is built with Node.js using Express.js, with session handling implemented via express-session. The project intentionally minimizes third-party dependencies and currently avoids external npm libraries beyond core tooling.</li>
+
     <li>API endpoints are tested using Insomnia.</li>
+
     <li>Insomnia test collections, middleware documentation, and Terms of Service / Data Protection policies are available in the /documentation directory.</li>
 </ul>
 <br>
@@ -35,17 +38,15 @@
     Current limitations / known issues in order of priority:
 </h3>
 <ul>
+    <li>user_app/user-app.mjs is getting large and complicated, so functions should be moved to specific modules (such as user-auth.mjs and so forth) and then be imported to user-app.mjs</li>
 
-<li>user_app/user-app.mjs is getting large and complicated, so functions should be moved to specific modules (such as user-auth.mjs and so forth) and then be imported to user-app.mjs</li>
+    <li>Remove logic from routers and see if functions can instead be called upon there, and add that logic to the newly created modules instead</li>
 
-<li>Remove logic from routers and see if functions can instead be called upon there, and add that logic to the newly created modules instead</li>
+    <li>Application not yet wired to a database, using only session storage</li>
 
-<li>Application not yet wired to a database, using only session storage</li>
+    <li>Administrator-privileges not yet fully implemented</li>
 
-<li>Administrator-privileges not yet fully implemented</li>
+    <li>Users' profile pictures can currently not be changed</li>
 
-<li>Users' profile pictures can currently not be changed</li>
-
-<li>No sanitization of inputs yet</li>
-
+    <li>No sanitization of inputs yet</li>
 </ul>
