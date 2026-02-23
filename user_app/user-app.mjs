@@ -8,6 +8,8 @@ import { showModal } from "./app_modules/modal.mjs";
 
 const app = document.getElementById("app");
 
+//----------- Globals -------------
+
 let currentUser = null;
 
 const state = {
@@ -16,8 +18,8 @@ const state = {
     username: "",
     password: "",
     mail: "",
-    acceptTos: false
-  }
+    acceptTos: false,
+  },
 };
 
 function getCurrentUser() {
@@ -41,7 +43,7 @@ async function loadGlobalUI() {
   container.innerHTML = await loadView("/views/ui_modal.html");
 }
 
-/* ---------------- Navigation ---------------- */
+// ---------------- Navigation ----------------
 
 async function showSignIn() {
   await mountView("/views/login_view.html", () => {
@@ -97,14 +99,16 @@ async function showGameDetail(game) {
     games.renderGameView(game, {
       onBack: showDashboard,
       onAddPlayer: (id, username) => api.addPlayer(id, username),
-      onStartGame: id => api.startGame(id),
+      onStartGame: (id) => api.startGame(id),
       onAddScores: (id, scores) => api.addScores(id, scores),
-      onFinishGame: id => api.finishGame(id),
+      onFinishGame: (id) => api.finishGame(id),
       onReload: selectGame,
-      showModal
+      showModal,
     });
   });
 }
+
+//---------------- Games -----------------
 
 async function reloadGames() {
   await dashboard.loadGames(api, selectGame);
@@ -119,6 +123,8 @@ async function selectGame(gameId) {
   }
 }
 
+//---------------- Users ------------------
+
 async function loadCurrentUser() {
   try {
     currentUser = await api.me();
@@ -127,6 +133,8 @@ async function loadCurrentUser() {
     showSignIn();
   }
 }
+
+//----------------- Init ------------------
 
 async function init() {
   await loadGlobalUI();
