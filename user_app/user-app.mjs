@@ -1,12 +1,17 @@
 import { api } from "../modules/api.mjs";
 
+import * as auth from "./app_modules/auth.mjs";
+import * as dashboard from "./app_modules/dashboard.mjs";
+import * as games from "./app_modules/games.mjs";
+import * as account from "./app_modules/account.mjs";
+import { showModal } from "./app_modules/modal.mjs";
+
 const app = document.getElementById("app");
+
 let currentUser = null;
+
 const state = {
-  login: {
-    username: "",
-    password: ""
-  },
+  login: { username: "", password: "" },
   signup: {
     username: "",
     password: "",
@@ -15,10 +20,8 @@ const state = {
   }
 };
 
-// ---------------- Utilities ----------------
-
-function totalScore(player) {
-  return player.scores.reduce((sum, s) => sum + s, 0);
+function getCurrentUser() {
+  return currentUser;
 }
 
 async function loadView(path) {
@@ -27,328 +30,84 @@ async function loadView(path) {
   return await res.text();
 }
 
+async function mountView(path, initFn) {
+  const html = await loadView(path);
+  app.innerHTML = html;
+  if (initFn) initFn();
+}
+
 async function loadGlobalUI() {
   const container = document.getElementById("global-ui");
   container.innerHTML = await loadView("/views/ui_modal.html");
 }
 
-async function mountView(path, initFn) {
-  const html = await loadView(path);
-  app.innerHTML = html;
-
-  if (initFn) initFn();
-}
-
-// ---------------- View Navigation ----------------
-
-async function showSignUp() {
-  await mountView("/views/signup_view.html", () => {
-    initSignupView();
-    wireSignup();
-    wireTosLink();
-    wireBackToSignIn();
-  });
-}
+/* ---------------- Navigation ---------------- */
 
 async function showSignIn() {
   await mountView("/views/login_view.html", () => {
-    initLoginView();
-    wireLogin();
-    wireCreateAccountLink();
+    auth.initLoginView(state);
+    auth.wireLogin(api, loadCurrentUser);
+    auth.wireCreateAccountLink(showSignUp);
+  });
+}
+
+async function showSignUp() {
+  await mountView("/views/signup_view.html", () => {
+    auth.initSignupView(state);
+    auth.wireSignup(api, showSignIn);
+    auth.wireBackToSignIn(showSignIn);
+    auth.wireTosLink(showTosView);
   });
 }
 
 async function showTosView() {
   await mountView("/views/terms_of_service_view.html", () => {
-    wireBackFromTos();
+    auth.wireBackFromTos(showSignUp);
   });
 }
 
-async function showDashBoard() {
+async function showDashboard() {
   await mountView("/views/dashboard_view.html", () => {
-    renderDashboardView();
-    wireLogout();
-    wireCreateGame();
-    wireUserView();
-    loadGames();
+    dashboard.renderDashboardView(getCurrentUser);
+    dashboard.wireLogout(api, showSignIn);
+    dashboard.wireCreateGame(api, showModal, reloadGames);
+    dashboard.wireUserView(showUserView);
+    reloadGames();
   });
 }
 
 async function showUserView() {
   await mountView("/views/account_view.html", () => {
-    renderAccountView(currentUser);
-    wireEditAccount();
-    wireDeleteAccount();
-    wireBackToDashboard();
+    account.renderAccountView(getCurrentUser());
+    account.wireEditAccount(showEditUser);
+    account.wireDeleteAccount(api, showSignIn);
+    account.wireBackToDashboard(showDashboard);
   });
 }
 
 async function showEditUser() {
   await mountView("/views/edit_view.html", () => {
-    wireEditForm();
-    wireReturnFromEdit();
+    account.wireEditForm(api, loadCurrentUser);
+    account.wireReturnFromEdit(showDashboard);
   });
 }
 
 async function showGameDetail(game) {
   await mountView("/views/game_view.html", () => {
-    renderGameView(game);
-    wireBackToDashboard();
+    games.renderGameView(game, {
+      onBack: showDashboard,
+      onAddPlayer: (id, username) => api.addPlayer(id, username),
+      onStartGame: id => api.startGame(id),
+      onAddScores: (id, scores) => api.addScores(id, scores),
+      onFinishGame: id => api.finishGame(id),
+      onReload: selectGame,
+      showModal
+    });
   });
 }
 
-// ---------------- Game Rendering ----------------
-
-function renderGameView(game) {
-  renderScoresTable(game);
-
-  const waitingControls = document.getElementById("waiting-controls");
-  const roundControls = document.getElementById("round-controls");
-  const finishBtn = document.getElementById("finish-game-btn");
-
-  if (waitingControls) waitingControls.hidden = true;
-  if (roundControls) roundControls.hidden = true;
-  if (finishBtn) finishBtn.hidden = true;
-
-  if (game.status === "waiting") {
-    if (waitingControls) waitingControls.hidden = false;
-
-    wireAddPlayer(game.id);
-    wireStartGame(game.id);
-  } else if (game.status === "started") {
-    if (roundControls) roundControls.hidden = false;
-    if (finishBtn) finishBtn.hidden = false;
-
-    renderRoundInputs(game);
-    wireAddRound(game.id);
-    wireFinishGame(game.id);
-  } else if (game.status === "finished") {
-    if (roundControls) roundControls.hidden = true;
-    if (finishBtn) finishBtn.hidden = false;
-  }
-}
-
-function renderScoresTable(game) {
-  const headRow = document.getElementById("scores-head-row");
-  const body = document.getElementById("scores-body");
-
-  body.innerHTML = "";
-  headRow.querySelectorAll(".round-col").forEach((el) => el.remove());
-
-  const rounds = game.players[0]?.scores.length || 0;
-  const totalHeader = headRow.lastElementChild;
-
-  for (let i = 0; i < rounds; i++) {
-    const th = document.createElement("th");
-    th.textContent = `Round ${i + 1}`;
-    th.classList.add("round-col");
-    headRow.insertBefore(th, totalHeader);
-  }
-
-  for (const player of game.players) {
-    const tr = document.createElement("tr");
-
-    const nameTd = document.createElement("td");
-    nameTd.textContent = player.username;
-    tr.appendChild(nameTd);
-
-    for (const score of player.scores) {
-      const td = document.createElement("td");
-      td.textContent = score;
-      tr.appendChild(td);
-    }
-
-    const totalTd = document.createElement("td");
-    totalTd.innerHTML = `<strong>${totalScore(player)}</strong>`;
-    tr.appendChild(totalTd);
-
-    body.appendChild(tr);
-  }
-}
-
-function renderRoundInputs(game) {
-  const container = document.getElementById("score-inputs");
-  container.innerHTML = "";
-
-  for (const player of game.players) {
-    const row = document.createElement("div");
-    row.className = "score-row";
-
-    const label = document.createElement("span");
-    label.className = "player-name";
-    label.textContent = player.username;
-
-    const input = document.createElement("input");
-    input.type = "number";
-    input.dataset.user = player.username;
-
-    row.append(label, input);
-    container.appendChild(row);
-  }
-}
-
-// ---------------- Auth ----------------
-
-//planning to create a viewmap, so that navigation back and forth between views can be done via browser
-
-async function loadCurrentUser() {
-  try {
-    currentUser = await api.me();
-    showDashBoard();
-  } catch {
-    showSignIn();
-  }
-}
-
-function initSignupView() {
-  const form = document.getElementById("signup-form");
-  if (!form) return;
-
-  form.username.value = state.signup.username;
-  form.password.value = state.signup.password;
-  form.mail.value = state.signup.mail;
-  form.acceptTos.checked = state.signup.acceptTos;
-
-  form.username.addEventListener("input", e => {
-    state.signup.username = e.target.value;
-  });
-
-  form.password.addEventListener("input", e => {
-    state.signup.password = e.target.value;
-  });
-
-  form.mail.addEventListener("input", e => {
-    state.signup.mail = e.target.value;
-  });
-
-  form.acceptTos.addEventListener("change", e => {
-    state.signup.acceptTos = e.target.checked;
-  });
-}
-
-function initLoginView() {
-  const usernameInput = document.getElementById("username");
-  const passwordInput = document.getElementById("password");
-
-  if (!usernameInput || !passwordInput) return;
-
-  usernameInput.value = state.login.username;
-  passwordInput.value = state.login.password;
-
-  usernameInput.addEventListener("input", (e) => {
-    state.login.username = e.target.value;
-  });
-
-  passwordInput.addEventListener("input", (e) => {
-    state.login.password = e.target.value;
-  });
-}
-
-function wireSignup() {
-  const form = document.getElementById("signup-form");
-  const output = document.getElementById("output");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const payload = {
-      username: form.username.value,
-      password: form.password.value,
-      mail: form.mail.value,
-      acceptTos: form.acceptTos.checked,
-    };
-
-    try {
-      await api.signup(payload);
-      showSignIn();
-    } catch (err) {
-      output.textContent = err.message;
-    }
-  });
-}
-
-function wireLogin() {
-  const form = document.getElementById("login-form");
-  const output = document.getElementById("output");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const payload = {
-      username: form.username.value,
-      password: form.password.value,
-    };
-
-    try {
-      await api.login(payload);
-      loadCurrentUser();
-    } catch (err) {
-      output.textContent = err.message;
-    }
-  });
-}
-
-function wireLogout() {
-  document.getElementById("logout-btn").addEventListener("click", async () => {
-    await api.logout();
-    showSignIn();
-  });
-}
-
-function wireCreateAccountLink() {
-  const link = document.getElementById("create-account-link");
-  if (!link) return;
-
-  link.addEventListener("click", (e) => {
-    e.preventDefault();
-    showSignUp();
-  });
-}
-
-function wireTosLink() {
-  const tosLink = document.getElementById("tos-link");
-  if (!tosLink) return;
-
-  tosLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    showTosView();
-  });
-}
-
-function wireBackFromTos() {
-  const btn = document.getElementById("back-from-tos-btn");
-  if (!btn) return;
-
-  btn.addEventListener("click", showSignUp);
-}
-
-// ---------------- Dashboard ----------------
-
-function renderDashboardView() {
-  document.getElementById("username").textContent = currentUser.username;
-
-  const img = document.getElementById("profile-pic");
-  img.src = currentUser.profilePic;
-  img.onerror = () => (img.src = "/assets/no_pic.png");
-}
-
-async function loadGames() {
-  const list = document.getElementById("games-list");
-
-  try {
-    const games = await api.getGames();
-
-    list.innerHTML = "";
-
-    for (const game of games) {
-      const li = document.createElement("li");
-      li.textContent = `${game.name} (${game.status})`;
-      li.addEventListener("click", () => selectGame(game.id));
-      list.appendChild(li);
-    }
-  } catch {
-    console.log("Failed to load games");
-  }
+async function reloadGames() {
+  await dashboard.loadGames(api, selectGame);
 }
 
 async function selectGame(gameId) {
@@ -360,244 +119,14 @@ async function selectGame(gameId) {
   }
 }
 
-// ------------------ Account -------------------
-
-function renderAccountView(user) {
-  document.getElementById("account-username").textContent = user.username;
-  document.getElementById("account-email").textContent = user.mail;
-
-  const img = document.getElementById("profile-pic");
-  img.src = user.profilePic || "/assets/no_pic.png";
-}
-
-function wireUserView() {
-  const btn = document.getElementById("user-view-btn");
-  if (!btn) return;
-
-  btn.addEventListener("click", showUserView);
-}
-
-function wireEditAccount() {
-  const btn = document.getElementById("edit-user-btn");
-  if (!btn) return;
-
-  btn.addEventListener("click", showEditUser);
-}
-
-function wireDeleteAccount() {
-  const btn = document.getElementById("delete-user-btn");
-  if (!btn) return;
-
-  btn.addEventListener("click", async () => {
-    if (!confirm("Are you sure you want to delete your account?")) return;
-
-    try {
-      await api.deleteMe();
-      showSignIn();
-    } catch {
-      alert("Failed to delete account");
-    }
-  });
-}
-
-function wireEditForm() {
-  const form = document.getElementById("edit-form");
-  const output = document.getElementById("output");
-
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const payload = {
-      username: form.username.value || undefined,
-      password: form.password.value || undefined,
-    };
-
-    try {
-      await api.updateMe(payload);
-      await loadCurrentUser();
-    } catch (err) {
-      output.textContent = err.message;
-    }
-  });
-}
-
-function wireReturnFromEdit() {
-  const btn = document.getElementById("return-to-loggedIn");
-  if (!btn) return;
-
-  btn.addEventListener("click", showDashBoard);
-}
-
-function wireBackToSignIn() {
-  const link = document.getElementById("back-to-signin-link");
-  if (!link) return;
-
-  link.addEventListener("click", (e) => {
-    e.preventDefault();
+async function loadCurrentUser() {
+  try {
+    currentUser = await api.me();
+    showDashboard();
+  } catch {
     showSignIn();
-  });
+  }
 }
-
-// ---------------- Game Actions ----------------
-
-function wireCreateGame() {
-  document
-    .getElementById("create-game-btn")
-    .addEventListener("click", async () => {
-      const name = await showModal({
-        title: "Create Game",
-        message: "Enter a name for your game:",
-        input: true,
-        confirmText: "Create",
-      });
-
-      if (!name) return;
-
-      try {
-        await api.createGame(name);
-        loadGames();
-      } catch {
-        console.log("Failed to create game");
-      }
-    });
-}
-
-function wireAddPlayer(gameId) {
-  const btn = document.getElementById("add-player-btn");
-  const input = document.getElementById("new-player-name");
-
-  btn.addEventListener("click", async () => {
-    const username = input.value.trim();
-    if (!username) return;
-
-    try {
-      await api.addPlayer(gameId, username);
-      selectGame(gameId);
-    } catch {
-      console.log("Could not add player");
-    }
-  });
-}
-
-function wireStartGame(gameId) {
-  const btn = document.getElementById("start-game-btn");
-  if (!btn) return;
-
-  btn.addEventListener("click", async () => {
-    const confirmed = await showModal({
-      title: "Start Game",
-      message: "Players will be locked. Continue?",
-      confirmText: "Start",
-    });
-
-    if (!confirmed) return;
-
-    try {
-      await api.startGame(gameId);
-      selectGame(gameId);
-    } catch {
-      console.log("Failed to start game");
-    }
-  });
-}
-
-function wireAddRound(gameId) {
-  document
-    .getElementById("add-round-btn")
-    .addEventListener("click", async () => {
-      const inputs = document.querySelectorAll("#score-inputs input");
-
-      const scores = [...inputs].map((input) => ({
-        username: input.dataset.user,
-        score: Number(input.value || 0),
-      }));
-
-      try {
-        await api.addScores(gameId, scores);
-        selectGame(gameId);
-      } catch {
-        console.log("Failed to add scores");
-      }
-    });
-}
-
-function wireFinishGame(gameId) {
-  const btn = document.getElementById("finish-game-btn");
-  if (!btn) return;
-
-  btn.addEventListener("click", async () => {
-    const confirmed = await showModal({
-      title: "Finish Game",
-      message: "This game will be finalized and cannot be edited.",
-      confirmText: "Finish",
-    });
-
-    if (!confirmed) return;
-
-    try {
-      await api.finishGame(gameId);
-      showDashBoard();
-    } catch {
-      console.log("Failed to finish game");
-    }
-  });
-}
-
-function wireBackToDashboard() {
-  const btn = document.getElementById("back-to-dashboard-btn");
-  if (!btn) return;
-
-  btn.addEventListener("click", showDashBoard);
-}
-
-//--------------- UI-modal---------------
-
-function showModal({ title, message, input = false, confirmText = "Confirm" }) {
-  return new Promise((resolve) => {
-    const modal = document.getElementById("ui-modal");
-    const titleEl = document.getElementById("modal-title");
-    const messageEl = document.getElementById("modal-message");
-    const inputEl = document.getElementById("modal-input");
-    const cancelBtn = document.getElementById("modal-cancel-btn");
-    const confirmBtn = document.getElementById("modal-confirm-btn");
-
-    titleEl.textContent = title;
-    messageEl.textContent = message;
-    confirmBtn.textContent = confirmText;
-
-    if (input) {
-      inputEl.hidden = false;
-      inputEl.value = "";
-      inputEl.focus();
-    } else {
-      inputEl.hidden = true;
-    }
-
-    modal.classList.remove("hidden");
-
-    function cleanup(result) {
-      modal.classList.add("hidden");
-      confirmBtn.removeEventListener("click", onConfirm);
-      cancelBtn.removeEventListener("click", onCancel);
-      resolve(result);
-    }
-
-    function onConfirm() {
-      cleanup(input ? inputEl.value.trim() : true);
-    }
-
-    function onCancel() {
-      cleanup(false);
-    }
-
-    confirmBtn.addEventListener("click", onConfirm);
-    cancelBtn.addEventListener("click", onCancel);
-  });
-}
-
-// ---------------- Init ----------------
 
 async function init() {
   await loadGlobalUI();
