@@ -20,7 +20,11 @@ https://panzerkula.atlassian.net/jira/software/projects/SCRUM/boards/1
 
 
 
-Current limitations / known issues:
+Current limitations / known issues in order of priority:
+
+user_app/user-app.mjs is getting large and complicated, so functions should be moved to specific modules (such as user-auth.mjs and so forth) and then be imported to user-app.mjs
+
+Remove logic from routers and see if functions can instead be called upon there, and add that logic to the newly created modules instead
 
 Application not yet wired to a database, using only session storage
 
