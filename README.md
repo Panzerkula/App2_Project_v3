@@ -35,7 +35,6 @@
     Current limitations / known issues in order of priority:
 </h3>
 <ul>
-    <li>user_app/user-app.mjs is getting large and complicated, so functions should be moved to specific modules (such as user-auth.mjs and so forth) and then be imported to user-app.mjs</li>
     <li>Remove logic from routers and see if functions can instead be called upon there, and add that logic to the newly created modules instead</li>
     <li>Application not yet wired to a database, using only session storage</li>
     <li>Administrator-privileges not yet fully implemented</li>
