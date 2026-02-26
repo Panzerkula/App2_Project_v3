@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import authRouters from "./routers/auth_routers.mjs";
 import { requireAuth } from "./modules/auth_middleware.mjs";
