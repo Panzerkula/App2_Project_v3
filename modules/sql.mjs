@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 
-const basePath = path.join(process.cwd(), "database");
+const basePath = path.join(process.cwd(), "database/users");
 
 export async function loadSql(filename) {
   const filePath = path.join(basePath, filename);
