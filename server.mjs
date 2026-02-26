@@ -5,9 +5,12 @@ import { requireAdmin } from "./modules/admin_middleware.mjs";
 import session from "express-session";
 import gamesRouters from "./routers/games_routers.mjs";
 import path from "path";
+import { pool } from "./modules/db.mjs";
 
 const app = express();
 const PORT = 3000;
+
+await pool.query("select 1");
 
 app.use(
   session({

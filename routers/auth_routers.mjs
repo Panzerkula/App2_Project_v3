@@ -3,6 +3,7 @@ import { requireAuth } from "../modules/auth_middleware.mjs";
 import { hashPassword, verifyPassword } from "../modules/password.mjs"
 import { checkLoginRateLimit, registerFailedAttempt, resetAttempts } from "../modules/login_rate_limiter.mjs";
 import { requireAdmin } from "../modules/admin_middleware.mjs";
+import { Pool } from "pg";
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ let nextUserId = 1;
 
 //---------------Signup Router------------------------------
 
-router.post("/signup", (req, res) => {
+router.post("/signup", async (req, res) => {
   const { username, password, mail, acceptTos, profilePic } = req.body;
 
   if (!username || !password) {
@@ -55,7 +56,7 @@ router.post("/signup", (req, res) => {
 
 //---------------Edit user Router------------------------------
 
-router.put("/me", requireAuth, (req, res) => {
+router.put("/me", requireAuth, async (req, res) => {
   const user = users.find(u => u.id === req.session.user.id);
   if (!user) {
     return res.status(404).json({ error: "User not found" });
@@ -86,7 +87,7 @@ router.put("/me", requireAuth, (req, res) => {
 
 //------------Delete User Router--------------------------------
 
-router.delete("/me", requireAuth, (req, res) => {
+router.delete("/me", requireAuth, async (req, res) => {
   const index = users.findIndex(u => u.id === req.session.user.id);
 
   if (index === -1) {
@@ -99,7 +100,7 @@ router.delete("/me", requireAuth, (req, res) => {
 
 //---------------Login Router----------------------------------
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   const key = `${req.ip}:${username}`;
@@ -140,14 +141,14 @@ router.post("/login", (req, res) => {
 
 //---------------Logout Router------------------------------------------
 
-router.post("/logout", (req, res) => {
+router.post("/logout", async (req, res) => {
   req.session.destroy();
   res.json({ success: true });
 });
 
 //-------------Current session router-----------------------------------
 
-router.get("/me", requireAuth, (req, res) => {
+router.get("/me", requireAuth, async (req, res) => {
   const user = users.find(u => u.id === req.session.user.id);
 
   if (!user) {
@@ -165,7 +166,7 @@ router.get("/me", requireAuth, (req, res) => {
 
 //---------------List users router-----------------------------------
 
-router.get("/users", requireAuth, (req, res) => {
+router.get("/users", requireAuth, async (req, res) => {
   res.json(
     users.map(u => ({
       id: u.id,
@@ -179,7 +180,7 @@ router.get("/users", requireAuth, (req, res) => {
 
 //-----------------Admin router-------------------------------------
 
-router.get("/admin/users", requireAuth, requireAdmin, (req, res) => {
+router.get("/admin/users", requireAuth, requireAdmin, async (req, res) => {
   res.json(
     users.map(u => ({
       id: u.id,
