@@ -4,6 +4,7 @@
 <br>
 <h3>
     Game Score Tracker is a fullstack web-based application designed to manage turn-based game scoring with role-based access for regular users and administrators.
+    Application / Web service URL: https://app2-project-v3-1.onrender.com/
 </h3>
 <br>
 <h3>
