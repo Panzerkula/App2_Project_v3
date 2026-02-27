@@ -1,0 +1,1 @@
+select * from games order by created_at desc;
