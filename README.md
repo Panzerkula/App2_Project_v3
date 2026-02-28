@@ -37,7 +37,6 @@
 </h3>
 <ul>
     <li>Remove logic from routers and see if functions can instead be called upon there, and add that logic to the newly created modules instead</li>
-    <li>Game storage not yet wired to a database, so currently, only users persist perpetually</li>
     <li>Administrator-privileges not yet fully implemented</li>
     <li>Users' profile pictures can currently not be changed</li>
     <li>No sanitization of inputs yet</li>
