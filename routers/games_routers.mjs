@@ -22,7 +22,7 @@ function buildGameFromRows(rows) {
     createdAt: rows[0].created_at,
     startedAt: rows[0].started_at,
     finishedAt: rows[0].finished_at,
-    players: []
+    players: [],
   };
 
   const playerMap = new Map();
@@ -34,7 +34,7 @@ function buildGameFromRows(rows) {
       playerMap.set(row.player_id, {
         userId: row.user_id,
         username: row.username,
-        scores: []
+        scores: [],
       });
     }
 
@@ -60,32 +60,25 @@ router.post("/", requireAuth, async (req, res) => {
     const createGameSql = await loadSql("games", "create_game.sql");
     const gameResult = await pool.query(createGameSql, [
       user.id,
-      name || "Untitled Game"
+      name || "Untitled Game",
     ]);
 
     const game = gameResult.rows[0];
 
     const addOwnerSql = await loadSql("games", "add_game_owner_as_player.sql");
-    await pool.query(addOwnerSql, [
-      game.id,
-      user.id,
-      user.username
-    ]);
+    await pool.query(addOwnerSql, [game.id, user.id, user.username]);
 
     const fullSql = await loadSql("games", "get_game_full.sql");
     const fullResult = await pool.query(fullSql, [game.id]);
 
     res.status(201).json(buildGameFromRows(fullResult.rows));
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Database error" });
   }
 });
 
-/* =========================================================
-   Get All Games For User
-========================================================= */
+//----------------------- User get all --------------------------
 
 router.get("/", requireAuth, async (req, res) => {
   try {
@@ -98,9 +91,7 @@ router.get("/", requireAuth, async (req, res) => {
   }
 });
 
-/* =========================================================
-   Get Specific Game
-========================================================= */
+//---------------------- Get game by id --------------------------
 
 router.get("/:id", requireAuth, async (req, res) => {
   const gameId = Number(req.params.id);
@@ -114,24 +105,19 @@ router.get("/:id", requireAuth, async (req, res) => {
 
     const game = buildGameFromRows(result.rows);
 
-    const isPlayer = game.players.some(
-      p => p.userId === req.user.id
-    );
+    const isPlayer = game.players.some((p) => p.userId === req.user.id);
 
     if (!isPlayer)
       return res.status(403).json({ error: "Not part of this game" });
 
     res.json(game);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Database error" });
   }
 });
 
-/* =========================================================
-   Add Player
-========================================================= */
+//------------------------ Add player --------------------------
 
 router.post("/:id/players", requireAuth, async (req, res) => {
   const gameId = Number(req.params.id);
@@ -148,7 +134,7 @@ router.post("/:id/players", requireAuth, async (req, res) => {
 
     if (game.status !== "waiting")
       return res.status(409).json({
-        error: "Cannot add players after game has started"
+        error: "Cannot add players after game has started",
       });
 
     const insertSql = await loadSql("games", "add_player.sql");
@@ -158,7 +144,6 @@ router.post("/:id/players", requireAuth, async (req, res) => {
     const updated = await pool.query(fullSql, [gameId]);
 
     res.status(201).json(buildGameFromRows(updated.rows));
-
   } catch (err) {
     if (err.code === "23505") {
       return res.status(409).json({ error: "Player already in game" });
@@ -169,9 +154,7 @@ router.post("/:id/players", requireAuth, async (req, res) => {
   }
 });
 
-/* =========================================================
-   Start Game
-========================================================= */
+//------------------------ Start game --------------------------
 
 router.post("/:id/start", requireAuth, async (req, res) => {
   const gameId = Number(req.params.id);
@@ -196,16 +179,13 @@ router.post("/:id/start", requireAuth, async (req, res) => {
 
     const updated = await pool.query(fullSql, [gameId]);
     res.json(buildGameFromRows(updated.rows));
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Database error" });
   }
 });
 
-/* =========================================================
-   Add Scores
-========================================================= */
+//------------------------ Add scores --------------------------
 
 router.post(
   "/:id/scores",
@@ -226,7 +206,7 @@ router.post(
 
       if (game.status !== "started")
         return res.status(409).json({
-          error: "Game has not started yet"
+          error: "Game has not started yet",
         });
 
       const nextRoundSql = await loadSql("games", "get_next_round.sql");
@@ -237,10 +217,7 @@ router.post(
       const insertScoreSql = await loadSql("games", "insert_score.sql");
 
       for (const { username, score } of scores) {
-        const playerResult = await pool.query(getPlayerSql, [
-          gameId,
-          username
-        ]);
+        const playerResult = await pool.query(getPlayerSql, [gameId, username]);
 
         const player = playerResult.rows[0];
         if (!player) continue;
@@ -249,23 +226,20 @@ router.post(
           gameId,
           player.id,
           roundNumber,
-          score
+          score,
         ]);
       }
 
       const updated = await pool.query(fullSql, [gameId]);
       res.json(buildGameFromRows(updated.rows));
-
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Database error" });
     }
-  }
+  },
 );
 
-/* =========================================================
-   Finish Game
-========================================================= */
+//------------------------ Finish game --------------------------
 
 router.post("/:id/finish", requireAuth, async (req, res) => {
   const gameId = Number(req.params.id);
@@ -290,22 +264,19 @@ router.post("/:id/finish", requireAuth, async (req, res) => {
 
     const updated = await pool.query(fullSql, [gameId]);
     res.json(buildGameFromRows(updated.rows));
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Database error" });
   }
 });
 
-/* =========================================================
-   Admin: Get All Games
-========================================================= */
+//------------------------ Admin get all -------------------------
 
 router.get("/admin/games", requireAuth, requireAdmin, async (req, res) => {
   try {
-    const result = await pool.query(
-      "select * from games order by created_at desc"
-    );
+    const sql = await loadSql("games", "admin_get_all.sql");
+    const result = await pool.query(sql);
+
     res.json(result.rows);
   } catch (err) {
     console.error(err);
