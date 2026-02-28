@@ -27,7 +27,7 @@ router.post("/signup", async (req, res) => {
     return res.status(400).json({ error: "TOS must be accepted" });
 
   try {
-    const checkSql = await loadSql("get_user_by_username.sql");
+    const checkSql = await loadSql("users", "get_user_by_username.sql");
     const existing = await pool.query(checkSql, [username]);
 
     if (existing.rows.length > 0)
@@ -35,7 +35,7 @@ router.post("/signup", async (req, res) => {
 
     const { hash, salt } = hashPassword(password);
 
-    const insertSql = await loadSql("create_user.sql");
+    const insertSql = await loadSql("users", "create_user.sql");
 
     await pool.query(insertSql, [
       username,
@@ -61,7 +61,7 @@ router.put("/me", requireAuth, async (req, res) => {
   const userId = req.session.user.id;
 
   try {
-    const getSql = await loadSql("get_user_by_id.sql");
+    const getSql = await loadSql("users", "get_user_by_id.sql");
     const existingUserResult = await pool.query(getSql, [userId]);
     const existingUser = existingUserResult.rows[0];
 
@@ -70,7 +70,7 @@ router.put("/me", requireAuth, async (req, res) => {
     }
 
     if (username && username !== existingUser.username) {
-      const checkSql = await loadSql("get_user_by_username.sql");
+      const checkSql = await loadSql("users", "get_user_by_username.sql");
       const usernameCheck = await pool.query(checkSql, [username]);
 
       if (usernameCheck.rows.length > 0) {
@@ -87,7 +87,7 @@ router.put("/me", requireAuth, async (req, res) => {
       newSalt = result.salt;
     }
 
-    const updateSql = await loadSql("update_user.sql");
+    const updateSql = await loadSql("users", "update_user.sql");
 
     const updateResult = await pool.query(updateSql, [
       username ?? null,
@@ -114,7 +114,7 @@ router.put("/me", requireAuth, async (req, res) => {
 
 router.delete("/me", requireAuth, async (req, res) => {
   try {
-    const sql = await loadSql("delete_user.sql");
+    const sql = await loadSql("users", "delete_user.sql");
     await pool.query(sql, [req.session.user.id]);
 
     req.session.destroy(() => {
@@ -136,7 +136,7 @@ router.post("/login", async (req, res) => {
     return res.status(429).json({ error: "Too many attempts" });
 
   try {
-    const sql = await loadSql("get_user_by_username.sql");
+    const sql = await loadSql("users", "get_user_by_username.sql");
     const result = await pool.query(sql, [username]);
 
     const user = result.rows[0];
@@ -182,7 +182,7 @@ router.post("/logout", async (req, res) => {
 //-------------Current session router-----------------------------------
 
 router.get("/me", requireAuth, async (req, res) => {
-  const sql = await loadSql("get_user_by_id.sql");
+  const sql = await loadSql("users", "get_user_by_id.sql");
   const result = await pool.query(sql, [req.session.user.id]);
 
   const user = result.rows[0];
@@ -204,7 +204,7 @@ router.get("/me", requireAuth, async (req, res) => {
 
 router.get("/users", requireAuth, async (req, res) => {
   try {
-    const sql = await loadSql("list_users.sql");
+    const sql = await loadSql("users", "list_users.sql");
     const result = await pool.query(sql);
 
     res.json(result.rows);
@@ -218,7 +218,7 @@ router.get("/users", requireAuth, async (req, res) => {
 
 router.get("/admin/users", requireAuth, requireAdmin, async (req, res) => {
   try {
-    const sql = await loadSql("list_users.sql");
+    const sql = await loadSql("users", "list_users.sql");
     const result = await pool.query(sql);
 
     res.json(result.rows);

@@ -1,148 +1,316 @@
 import express from "express";
 import { requireAuth } from "../modules/auth_middleware.mjs";
-import { validateRoundScores } from "../modules/scores_middleware.mjs";
-import { loadGame, requirePlayer, forbidIfFinished, requireGameOwner } from "../modules/game_middleware.mjs";
 import { requireAdmin } from "../modules/admin_middleware.mjs";
+import { validateRoundScores } from "../modules/scores_middleware.mjs";
+import { pool } from "../modules/db.mjs";
+import { loadSql } from "../modules/sql.mjs";
 
 const router = express.Router();
 
-const games = [];
-let nextGameId = 1;
+/* =========================================================
+   Helper: Build Game Object From Joined Rows
+========================================================= */
 
-//-----------------Create game---------------------
+function buildGameFromRows(rows) {
+  if (!rows.length) return null;
 
-router.post("/", requireAuth, (req, res) => {
-  const user = req.user;
-  const { name } = req.body;
-
-  const newGame = {
-    id: nextGameId++,
-    ownerId: user.id,
-    name: name || "Untitled Game",
-    players: [
-      {
-        userId: user.id,
-        username: user.username,
-        scores: []
-      }
-    ],
-    status: "waiting",
-    createdAt: new Date().toISOString()
+  const game = {
+    id: rows[0].game_id,
+    ownerId: rows[0].owner_id,
+    name: rows[0].name,
+    status: rows[0].status,
+    createdAt: rows[0].created_at,
+    startedAt: rows[0].started_at,
+    finishedAt: rows[0].finished_at,
+    players: []
   };
 
-  games.push(newGame);
+  const playerMap = new Map();
 
-  res.status(201).json(newGame);
+  for (const row of rows) {
+    if (!row.player_id) continue;
+
+    if (!playerMap.has(row.player_id)) {
+      playerMap.set(row.player_id, {
+        userId: row.user_id,
+        username: row.username,
+        scores: []
+      });
+    }
+
+    if (row.round_number !== null) {
+      playerMap.get(row.player_id).scores.push(row.score);
+    }
+  }
+
+  game.players = Array.from(playerMap.values());
+
+  return game;
+}
+
+/* =========================================================
+   Create Game
+========================================================= */
+
+router.post("/", requireAuth, async (req, res) => {
+  const { name } = req.body;
+  const user = req.user;
+
+  try {
+    const createGameSql = await loadSql("games", "create_game.sql");
+    const gameResult = await pool.query(createGameSql, [
+      user.id,
+      name || "Untitled Game"
+    ]);
+
+    const game = gameResult.rows[0];
+
+    const addOwnerSql = await loadSql("games", "add_game_owner_as_player.sql");
+    await pool.query(addOwnerSql, [
+      game.id,
+      user.id,
+      user.username
+    ]);
+
+    const fullSql = await loadSql("games", "get_game_full.sql");
+    const fullResult = await pool.query(fullSql, [game.id]);
+
+    res.status(201).json(buildGameFromRows(fullResult.rows));
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
-//----------------Get All Games---------------------
+/* =========================================================
+   Get All Games For User
+========================================================= */
 
-router.get("/", requireAuth, (req, res) => {
-  const userId = req.user.id;
-
-  const userGames = games.filter(
-    g => g.players.some(p => p.userId === userId)
-  );
-
-  res.json(userGames);
+router.get("/", requireAuth, async (req, res) => {
+  try {
+    const sql = await loadSql("games", "get_games_for_user.sql");
+    const result = await pool.query(sql, [req.user.id]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
-//---------------Get Specific Game------------------
+/* =========================================================
+   Get Specific Game
+========================================================= */
 
-router.get("/:id", requireAuth, loadGame(games), requirePlayer, (req, res) =>
-  {res.json(req.game); 
+router.get("/:id", requireAuth, async (req, res) => {
+  const gameId = Number(req.params.id);
+
+  try {
+    const sql = await loadSql("games", "get_game_full.sql");
+    const result = await pool.query(sql, [gameId]);
+
+    if (!result.rows.length)
+      return res.status(404).json({ error: "Game not found" });
+
+    const game = buildGameFromRows(result.rows);
+
+    const isPlayer = game.players.some(
+      p => p.userId === req.user.id
+    );
+
+    if (!isPlayer)
+      return res.status(403).json({ error: "Not part of this game" });
+
+    res.json(game);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
-//------------------Add player---------------------
+/* =========================================================
+   Add Player
+========================================================= */
 
-router.post("/:id/players", requireAuth, (req, res) => {
+router.post("/:id/players", requireAuth, async (req, res) => {
   const gameId = Number(req.params.id);
   const { username } = req.body;
 
-  const game = games.find(g => g.id === gameId);
-  if (!game) return res.status(404).json({ error: "Game not found" });
+  try {
+    const fullSql = await loadSql("games", "get_game_full.sql");
+    const fullResult = await pool.query(fullSql, [gameId]);
 
-  const alreadyInGame = game.players.some(p => p.username === username);
-  if (alreadyInGame) {
-    return res.status(409).json({ error: "Player already in game" });
+    if (!fullResult.rows.length)
+      return res.status(404).json({ error: "Game not found" });
+
+    const game = buildGameFromRows(fullResult.rows);
+
+    if (game.status !== "waiting")
+      return res.status(409).json({
+        error: "Cannot add players after game has started"
+      });
+
+    const insertSql = await loadSql("games", "add_player.sql");
+
+    await pool.query(insertSql, [gameId, username]);
+
+    const updated = await pool.query(fullSql, [gameId]);
+
+    res.status(201).json(buildGameFromRows(updated.rows));
+
+  } catch (err) {
+    if (err.code === "23505") {
+      return res.status(409).json({ error: "Player already in game" });
+    }
+
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
   }
-
-  if (game.status !== "waiting") {
-    return res.status(409).json({
-      error: "Cannot add players after game has started"
-    });
-  }
-
-  game.players.push({
-    userId: null,
-    username,
-    scores: []
-  });
-
-  res.status(201).json(game);
 });
 
-//-------------------Start game---------------------
+/* =========================================================
+   Start Game
+========================================================= */
 
-router.post("/:id/start",
-  requireAuth,
-  loadGame(games),
-  requireGameOwner,
-  forbidIfFinished,
-  (req, res) => {
-    if (req.game.status !== "waiting") {
+router.post("/:id/start", requireAuth, async (req, res) => {
+  const gameId = Number(req.params.id);
+
+  try {
+    const fullSql = await loadSql("games", "get_game_full.sql");
+    const fullResult = await pool.query(fullSql, [gameId]);
+
+    if (!fullResult.rows.length)
+      return res.status(404).json({ error: "Game not found" });
+
+    const game = buildGameFromRows(fullResult.rows);
+
+    if (game.ownerId !== req.user.id)
+      return res.status(403).json({ error: "Only owner can start game" });
+
+    if (game.status !== "waiting")
       return res.status(409).json({ error: "Game already started" });
-    }
 
-    req.game.status = "started";
-    res.json(req.game);
+    const startSql = await loadSql("games", "start_game.sql");
+    await pool.query(startSql, [gameId]);
+
+    const updated = await pool.query(fullSql, [gameId]);
+    res.json(buildGameFromRows(updated.rows));
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
   }
-);
+});
 
-//------------------Add scores-----------------------
+/* =========================================================
+   Add Scores
+========================================================= */
 
-router.post("/:id/scores",
+router.post(
+  "/:id/scores",
   requireAuth,
-  loadGame(games),
-  requirePlayer,
-  forbidIfFinished,
   validateRoundScores,
-  (req, res) => {
-    const game = req.game; const { scores } = req.body;
+  async (req, res) => {
+    const gameId = Number(req.params.id);
+    const { scores } = req.body;
 
-    if (game.status !== "started") {
-      return res.status(409).json({ error: "Game has not started yet" });
-    }
-    
-    for (const { username, score } of scores) {
-      const player = game.players.find(p => p.username === username);
-      
-      if (player) {
-        player.scores.push(score);
+    try {
+      const fullSql = await loadSql("games", "get_game_full.sql");
+      const fullResult = await pool.query(fullSql, [gameId]);
+
+      if (!fullResult.rows.length)
+        return res.status(404).json({ error: "Game not found" });
+
+      const game = buildGameFromRows(fullResult.rows);
+
+      if (game.status !== "started")
+        return res.status(409).json({
+          error: "Game has not started yet"
+        });
+
+      const nextRoundSql = await loadSql("games", "get_next_round.sql");
+      const roundResult = await pool.query(nextRoundSql, [gameId]);
+      const roundNumber = roundResult.rows[0].next_round;
+
+      const getPlayerSql = await loadSql("games", "get_player_by_username.sql");
+      const insertScoreSql = await loadSql("games", "insert_score.sql");
+
+      for (const { username, score } of scores) {
+        const playerResult = await pool.query(getPlayerSql, [
+          gameId,
+          username
+        ]);
+
+        const player = playerResult.rows[0];
+        if (!player) continue;
+
+        await pool.query(insertScoreSql, [
+          gameId,
+          player.id,
+          roundNumber,
+          score
+        ]);
       }
+
+      const updated = await pool.query(fullSql, [gameId]);
+      res.json(buildGameFromRows(updated.rows));
+
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Database error" });
     }
-
-    res.json(game);
   }
 );
 
-//-------------------Finish game---------------------
+/* =========================================================
+   Finish Game
+========================================================= */
 
-router.post("/:id/finish", 
-  requireAuth,
-  loadGame(games),
-  requireGameOwner,
-  forbidIfFinished,
-  (req, res) => {
-    req.game.status = "finished";
-    res.json(req.game);
+router.post("/:id/finish", requireAuth, async (req, res) => {
+  const gameId = Number(req.params.id);
+
+  try {
+    const fullSql = await loadSql("games", "get_game_full.sql");
+    const fullResult = await pool.query(fullSql, [gameId]);
+
+    if (!fullResult.rows.length)
+      return res.status(404).json({ error: "Game not found" });
+
+    const game = buildGameFromRows(fullResult.rows);
+
+    if (game.ownerId !== req.user.id)
+      return res.status(403).json({ error: "Only owner can finish game" });
+
+    if (game.status === "finished")
+      return res.status(409).json({ error: "Game already finished" });
+
+    const finishSql = await loadSql("games", "finish_game.sql");
+    await pool.query(finishSql, [gameId]);
+
+    const updated = await pool.query(fullSql, [gameId]);
+    res.json(buildGameFromRows(updated.rows));
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
   }
-);
+});
 
-//----------------Get all games Admin--------------
+/* =========================================================
+   Admin: Get All Games
+========================================================= */
 
-router.get("/admin/games", requireAuth, requireAdmin, (req, res) => {
-  res.json(games);
+router.get("/admin/games", requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "select * from games order by created_at desc"
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 export default router;
