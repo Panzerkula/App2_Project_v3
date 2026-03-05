@@ -1,0 +1,11 @@
+{
+  "MISSING_FIELDS": "Username and password required",
+  "USERNAME_TAKEN": "Username already taken",
+  "INVALID_CREDENTIALS": "Invalid username or password",
+  "USER_NOT_FOUND": "User not found",
+  "NOT_AUTHENTICATED": "Not authenticated",
+  "SERVER_ERROR": "Server error",
+  "MISSING_MAIL": "Please fill out your Email",
+  "MISSING_TOS": "Please read and accept the Terms of Service",
+  "RATE_LIMIT": "Too many attempts, please wait 10 minutes before retrying"
+}

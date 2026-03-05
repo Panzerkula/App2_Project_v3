@@ -1,0 +1,11 @@
+{
+  "MISSING_FIELDS": "Brukernavn og passord er påkrevd",
+  "USERNAME_TAKEN": "Brukernavn er allerede tatt",
+  "INVALID_CREDENTIALS": "Feil brukernavn eller passord",
+  "USER_NOT_FOUND": "Bruker ikke funnet",
+  "NOT_AUTHENTICATED": "Ikke autentisert",
+  "SERVER_ERROR": "Serverfeil",
+  "MISSING_MAIL": "Vennligst fyll inn din mailadresse",
+  "MISSING_TOS": "Vennligst les og godta tjenestevilkår og personvernerklæring",
+  "RATE_LIMIT": "For mange forsøk, vennligst vent 10 minutter før du prøver igjen"
+}

@@ -141,4 +141,8 @@ async function init() {
   await loadCurrentUser();
 }
 
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service_worker.js");
+}
+
 init();

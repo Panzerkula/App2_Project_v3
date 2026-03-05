@@ -55,7 +55,7 @@ export function wireSignup(api, onSuccess) {
         acceptTos: form.acceptTos.checked
       });
       onSuccess();
-    } catch (err) {
+    } catch {
       output.textContent = err.message;
     }
   });

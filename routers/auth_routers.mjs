@@ -9,29 +9,36 @@ import {
 import { requireAdmin } from "../modules/admin_middleware.mjs";
 import { pool } from "../modules/db.mjs";
 import { loadSql } from "../modules/sql.mjs";
+import i18n from "../modules/i18n.mjs";
 
 const router = express.Router();
 
 /* ---------------- SIGNUP ---------------- */
 
 router.post("/signup", async (req, res) => {
+  let header = req.headers["accept-language"];
+  let lang = header?.split(",")[0].split("-")[0] || "en";
+
+  if (lang === "nb") lang = "no";
+
+  const locale = i18n[lang] || i18n.en;
   const { username, password, mail, acceptTos, profilePic } = req.body;
 
   if (!username || !password)
-    return res.status(400).json({ error: "Username and password required" });
+    return res.status(400).json({ error: locale.MISSING_FIELDS });
 
   if (!mail || !mail.includes("@"))
-    return res.status(400).json({ error: "Invalid email address" });
+    return res.status(400).json({ error: locale.MISSING_MAIL });
 
   if (acceptTos !== true)
-    return res.status(400).json({ error: "TOS must be accepted" });
+    return res.status(400).json({ error: locale.MISSING_TOS });
 
   try {
     const checkSql = await loadSql("users", "get_user_by_username.sql");
     const existing = await pool.query(checkSql, [username]);
 
     if (existing.rows.length > 0)
-      return res.status(409).json({ error: "Username already taken" });
+      return res.status(409).json({ error: locale.USERNAME_TAKEN });
 
     const { hash, salt } = hashPassword(password);
 
@@ -50,13 +57,19 @@ router.post("/signup", async (req, res) => {
     res.status(201).json({ success: true });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Database error" });
+    res.status(500).json({ error: locale.SERVER_ERROR });
   }
 });
 
 //---------------Edit user Router------------------------------
 
 router.put("/me", requireAuth, async (req, res) => {
+  let header = req.headers["accept-language"];
+  let lang = header?.split(",")[0].split("-")[0] || "en";
+
+  if (lang === "nb") lang = "no";
+
+  const locale = i18n[lang] || i18n.en;
   const { username, password, profilePic } = req.body;
   const userId = req.session.user.id;
 
@@ -66,7 +79,7 @@ router.put("/me", requireAuth, async (req, res) => {
     const existingUser = existingUserResult.rows[0];
 
     if (!existingUser) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: locale.USER_NOT_FOUND });
     }
 
     if (username && username !== existingUser.username) {
@@ -74,7 +87,7 @@ router.put("/me", requireAuth, async (req, res) => {
       const usernameCheck = await pool.query(checkSql, [username]);
 
       if (usernameCheck.rows.length > 0) {
-        return res.status(409).json({ error: "Username already taken" });
+        return res.status(409).json({ error: locale.USERNAME_TAKEN });
       }
     }
 
@@ -106,13 +119,19 @@ router.put("/me", requireAuth, async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Database error" });
+    res.status(500).json({ error: locale.SERVER_ERROR });
   }
 });
 
 //------------Delete User Router--------------------------------
 
 router.delete("/me", requireAuth, async (req, res) => {
+  let header = req.headers["accept-language"];
+  let lang = header?.split(",")[0].split("-")[0] || "en";
+
+  if (lang === "nb") lang = "no";
+
+  const locale = i18n[lang] || i18n.en;
   try {
     const sql = await loadSql("users", "delete_user.sql");
     await pool.query(sql, [req.session.user.id]);
@@ -122,18 +141,24 @@ router.delete("/me", requireAuth, async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Database error" });
+    res.status(500).json({ error: locale.SERVER_ERROR });
   }
 });
 
 //---------------Login Router----------------------------------
 
 router.post("/login", async (req, res) => {
+  let header = req.headers["accept-language"];
+  let lang = header?.split(",")[0].split("-")[0] || "en";
+
+  if (lang === "nb") lang = "no";
+
+  const locale = i18n[lang] || i18n.en;
   const { username, password } = req.body;
   const key = `${req.ip}:${username}`;
 
   if (!checkLoginRateLimit(key))
-    return res.status(429).json({ error: "Too many attempts" });
+    return res.status(429).json({ error: locale.RATE_LIMIT });
 
   try {
     const sql = await loadSql("users", "get_user_by_username.sql");
@@ -143,7 +168,7 @@ router.post("/login", async (req, res) => {
 
     if (!user) {
       registerFailedAttempt(key);
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: locale.INVALID_CREDENTIALS });
     }
 
     const valid = verifyPassword(
@@ -154,7 +179,7 @@ router.post("/login", async (req, res) => {
 
     if (!valid) {
       registerFailedAttempt(key);
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: locale.INVALID_CREDENTIALS });
     }
 
     resetAttempts(key);
@@ -168,12 +193,18 @@ router.post("/login", async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Database error" });
+    res.status(500).json({ error: locale.SERVER_ERROR });
   }
 });
 //---------------Logout Router------------------------------------------
 
 router.post("/logout", async (req, res) => {
+  let header = req.headers["accept-language"];
+  let lang = header?.split(",")[0].split("-")[0] || "en";
+
+  if (lang === "nb") lang = "no";
+
+  const locale = i18n[lang] || i18n.en;
   req.session.destroy(() => {
     res.json({ success: true });
   });
@@ -182,13 +213,19 @@ router.post("/logout", async (req, res) => {
 //-------------Current session router-----------------------------------
 
 router.get("/me", requireAuth, async (req, res) => {
+  let header = req.headers["accept-language"];
+  let lang = header?.split(",")[0].split("-")[0] || "en";
+
+  if (lang === "nb") lang = "no";
+
+  const locale = i18n[lang] || i18n.en;
   const sql = await loadSql("users", "get_user_by_id.sql");
   const result = await pool.query(sql, [req.session.user.id]);
 
   const user = result.rows[0];
 
   if (!user) {
-    return res.status(404).json({ error: "User not found" });
+    return res.status(404).json({ error: locale.USER_NOT_FOUND });
   }
 
   res.json({
@@ -203,6 +240,12 @@ router.get("/me", requireAuth, async (req, res) => {
 //---------------List users router-----------------------------------
 
 router.get("/users", requireAuth, async (req, res) => {
+  let header = req.headers["accept-language"];
+  let lang = header?.split(",")[0].split("-")[0] || "en";
+
+  if (lang === "nb") lang = "no";
+
+  const locale = i18n[lang] || i18n.en;
   try {
     const sql = await loadSql("users", "list_users.sql");
     const result = await pool.query(sql);
@@ -210,13 +253,19 @@ router.get("/users", requireAuth, async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Database error" });
+    res.status(500).json({ error: locale.SERVER_ERROR });
   }
 });
 
 //-----------------Admin router-------------------------------------
 
 router.get("/admin/users", requireAuth, requireAdmin, async (req, res) => {
+  let header = req.headers["accept-language"];
+  let lang = header?.split(",")[0].split("-")[0] || "en";
+
+  if (lang === "nb") lang = "no";
+
+  const locale = i18n[lang] || i18n.en;
   try {
     const sql = await loadSql("users", "list_users.sql");
     const result = await pool.query(sql);
@@ -225,7 +274,7 @@ router.get("/admin/users", requireAuth, requireAdmin, async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Database error" });
+    res.status(500).json({ error: locale.SERVER_ERROR });
   }
 });
 
