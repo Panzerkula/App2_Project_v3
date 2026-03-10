@@ -56,7 +56,7 @@ export function wireSignup(api, onSuccess) {
       });
       onSuccess();
     } catch {
-      output.textContent = err.message;
+      output.textContent = "Username taken";
     }
   });
 }

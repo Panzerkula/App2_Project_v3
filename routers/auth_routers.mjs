@@ -9,19 +9,15 @@ import {
 import { requireAdmin } from "../modules/admin_middleware.mjs";
 import { pool } from "../modules/db.mjs";
 import { loadSql } from "../modules/sql.mjs";
-import i18n from "../modules/i18n.mjs";
+import { getLocale } from "../modules/locale_middleware.mjs"
 
 const router = express.Router();
 
 /* ---------------- SIGNUP ---------------- */
 
 router.post("/signup", async (req, res) => {
-  let header = req.headers["accept-language"];
-  let lang = header?.split(",")[0].split("-")[0] || "en";
 
-  if (lang === "nb") lang = "no";
-
-  const locale = i18n[lang] || i18n.en;
+  const locale = getLocale(req);
   const { username, password, mail, acceptTos, profilePic } = req.body;
 
   if (!username || !password)
@@ -64,12 +60,8 @@ router.post("/signup", async (req, res) => {
 //---------------Edit user Router------------------------------
 
 router.put("/me", requireAuth, async (req, res) => {
-  let header = req.headers["accept-language"];
-  let lang = header?.split(",")[0].split("-")[0] || "en";
 
-  if (lang === "nb") lang = "no";
-
-  const locale = i18n[lang] || i18n.en;
+  const locale = getLocale(req);
   const { username, password, profilePic } = req.body;
   const userId = req.session.user.id;
 
@@ -126,12 +118,7 @@ router.put("/me", requireAuth, async (req, res) => {
 //------------Delete User Router--------------------------------
 
 router.delete("/me", requireAuth, async (req, res) => {
-  let header = req.headers["accept-language"];
-  let lang = header?.split(",")[0].split("-")[0] || "en";
-
-  if (lang === "nb") lang = "no";
-
-  const locale = i18n[lang] || i18n.en;
+  const locale = getLocale(req);
   try {
     const sql = await loadSql("users", "delete_user.sql");
     await pool.query(sql, [req.session.user.id]);
@@ -148,12 +135,7 @@ router.delete("/me", requireAuth, async (req, res) => {
 //---------------Login Router----------------------------------
 
 router.post("/login", async (req, res) => {
-  let header = req.headers["accept-language"];
-  let lang = header?.split(",")[0].split("-")[0] || "en";
-
-  if (lang === "nb") lang = "no";
-
-  const locale = i18n[lang] || i18n.en;
+  const locale = getLocale(req);
   const { username, password } = req.body;
   const key = `${req.ip}:${username}`;
 
@@ -199,12 +181,7 @@ router.post("/login", async (req, res) => {
 //---------------Logout Router------------------------------------------
 
 router.post("/logout", async (req, res) => {
-  let header = req.headers["accept-language"];
-  let lang = header?.split(",")[0].split("-")[0] || "en";
-
-  if (lang === "nb") lang = "no";
-
-  const locale = i18n[lang] || i18n.en;
+  const locale = getLocale(req);
   req.session.destroy(() => {
     res.json({ success: true });
   });
@@ -213,12 +190,7 @@ router.post("/logout", async (req, res) => {
 //-------------Current session router-----------------------------------
 
 router.get("/me", requireAuth, async (req, res) => {
-  let header = req.headers["accept-language"];
-  let lang = header?.split(",")[0].split("-")[0] || "en";
-
-  if (lang === "nb") lang = "no";
-
-  const locale = i18n[lang] || i18n.en;
+  const locale = getLocale(req);
   const sql = await loadSql("users", "get_user_by_id.sql");
   const result = await pool.query(sql, [req.session.user.id]);
 
@@ -240,12 +212,7 @@ router.get("/me", requireAuth, async (req, res) => {
 //---------------List users router-----------------------------------
 
 router.get("/users", requireAuth, async (req, res) => {
-  let header = req.headers["accept-language"];
-  let lang = header?.split(",")[0].split("-")[0] || "en";
-
-  if (lang === "nb") lang = "no";
-
-  const locale = i18n[lang] || i18n.en;
+  const locale = getLocale(req);
   try {
     const sql = await loadSql("users", "list_users.sql");
     const result = await pool.query(sql);
@@ -260,12 +227,7 @@ router.get("/users", requireAuth, async (req, res) => {
 //-----------------Admin router-------------------------------------
 
 router.get("/admin/users", requireAuth, requireAdmin, async (req, res) => {
-  let header = req.headers["accept-language"];
-  let lang = header?.split(",")[0].split("-")[0] || "en";
-
-  if (lang === "nb") lang = "no";
-
-  const locale = i18n[lang] || i18n.en;
+  const locale = getLocale(req);
   try {
     const sql = await loadSql("users", "list_users.sql");
     const result = await pool.query(sql);
