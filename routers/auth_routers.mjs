@@ -13,7 +13,7 @@ import { getLocale } from "../modules/locale_middleware.mjs"
 
 const router = express.Router();
 
-/* ---------------- SIGNUP ---------------- */
+// ---------------- Signup Router ----------------
 
 router.post("/signup", async (req, res) => {
 
