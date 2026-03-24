@@ -1,0 +1,22 @@
+<!--A modified version of the dashboard_view, where admin(s) can either edit their account, log out or access user data-->
+<div class="app-header">
+  <img src="/assets/header.svg" alt="Game Score Tracker" />
+</div>
+
+<section id="dashboard-section">
+  <h2>Welcome, <span id="username">${user.username}</span></h2>
+
+  <img
+    id="profile-pic"
+    class="profile-pic"
+    src=""
+    alt="Profile picture"
+    onerror="this.src = '/assets/no_pic.png'"
+  />
+
+  <button id="show-all-users">Show all users</button>
+  <button id="user-view-btn">Account</button>
+  <button id="logout-btn">Logout</button>
+</section>
+
+<pre id="output"></pre>
