@@ -1,0 +1,1 @@
+Determines what language should be used for a request based on browser settings. Also contains a normalization step for "en-xx" -> "en" and "nb" -> "no"

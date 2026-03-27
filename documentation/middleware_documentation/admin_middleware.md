@@ -1,0 +1,1 @@
+Detects whether or not a user's role is set to "admin", or if a user is attached to the session at all, and throws an error accordingly
