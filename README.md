@@ -36,8 +36,9 @@
     Current limitations / known issues in order of priority:
 </h3>
 <ul>
-    <li>Remove logic from routers and see if functions can instead be called upon there, and add that logic to the newly created modules instead</li>
-    <li>Administrator-privileges not yet fully implemented</li>
+    <li>Need to remove some logic from routers and see if functions can instead be called upon there, and add that logic to modules instead</li>
+    <li>Administrator-privileges fully backend-integrated, but not wired or mounted to the UI</li>
     <li>Users' profile pictures can currently not be changed</li>
-    <li>No sanitization of inputs yet</li>
+    <li>No sanitization of inputs</li>
+    <li>Only owners can see games</li>
 </ul>
