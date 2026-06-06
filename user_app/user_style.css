@@ -416,7 +416,6 @@ h6 {
   margin: 0 auto;
 }
 
-.signup-form a,
-.create-account a {
-  color: rgb(0, 204, 255);
-};
+#tos-link, #back-to-signin-link, #create-account-link {
+    color: #44caff;
+}
