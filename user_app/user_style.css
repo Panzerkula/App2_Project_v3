@@ -415,3 +415,8 @@ h6 {
   display: block;
   margin: 0 auto;
 }
+
+.signup-form a,
+.create-account a {
+  color: rgb(0, 204, 255);
+}
