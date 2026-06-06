@@ -416,6 +416,8 @@ h6 {
   margin: 0 auto;
 }
 
-#tos-link, #back-to-signin-link, #create-account-link {
-    color: #44caff;
+#tos-link,
+#back-to-signin-link,
+#create-account-link {
+  color: #cc0000;
 }
