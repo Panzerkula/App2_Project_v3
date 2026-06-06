@@ -7,7 +7,9 @@ import session from "express-session";
 import gamesRouters from "./routers/games_routers.mjs";
 import path from "path";
 import { pool } from "./modules/db.mjs";
+import connectPgSimple from "connect-pg-simple";
 
+const PgStore = connectPgSimple(session);
 const app = express();
 const PORT = 3000;
 
@@ -15,7 +17,11 @@ await pool.query("select 1");
 
 app.use(
   session({
-    secret: "dev-secret",
+    store: new PgStore({
+      pool: pool,
+      createTableIfMissing: true
+    }),
+    secret: process.env.SESSION_SECRET || "dev-secret",
     resave: false,
     saveUninitialized: false,
   }),
